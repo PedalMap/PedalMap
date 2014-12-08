@@ -1,4 +1,0 @@
-PedalMap
-========
-
-PedalMap repo
