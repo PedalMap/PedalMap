@@ -12,7 +12,7 @@ import CoreLocation
 class ViewController: UIViewController, CLLocationManagerDelegate {
     let locationManager = CLLocationManager()
     let region = CLBeaconRegion(proximityUUID:
-        NSUUID(UUIDString: "E2C56-DFFB-48D2-B060-D0F5A71096E0"), identifier: "AprilBrothers")
+        NSUUID(UUIDString: "E2C56DB5-DFFB-48D2-B060-D0F5A71096E0"), identifier: "AprilBrothers")
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,7 +22,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         if (CLLocationManager.authorizationStatus() != CLAuthorizationStatus.AuthorizedWhenInUse) {
             locationManager.requestWhenInUseAuthorization()
         }
-        
+
         locationManager.startRangingBeaconsInRegion(region)
     }
     
