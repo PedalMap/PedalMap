@@ -40,9 +40,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         // NOTE: This assumes that closest beacon is first in the array. Not fit for production
         if (knownBeacons.count > 0) {
             let closestBeacon = knownBeacons[0] as CLBeacon
-            self.view.backgroundColor = self.colors[closestBeacon.minor.integerValue]
-            println(beacons)
-        }
+            if let color = self.colors[closestBeacon.minor.integerValue] {
+                self.view.backgroundColor = color
+            } else {
+                self.view.backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 1)
+                println("unknown minor value \(closestBeacon.minor)")"
+            }
+            }
     }
 }
 
