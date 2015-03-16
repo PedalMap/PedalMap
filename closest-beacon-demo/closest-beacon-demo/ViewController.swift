@@ -44,9 +44,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                 self.view.backgroundColor = color
             } else {
                 self.view.backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 1)
-                println("unknown minor value \(closestBeacon.minor)")"
+                println("unknown minor value \(closestBeacon.minor)")
             }
-            }
+        }
     }
 }
 
