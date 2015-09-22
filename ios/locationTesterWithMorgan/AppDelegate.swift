@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     
     // Define a region to be monitored
     func application(application: UIApplication,
-        didFinishLaunchingWithOptions launchOptions: NSDictionary?) -> Bool {
+        didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
             let uuidString = "E2C56DB5-DFFB-48D2-B060-D0F5A71096E0"
             let beaconIdentifier = "iBeaconModules.us"
             let beaconUUID:NSUUID = NSUUID(UUIDString: uuidString)!
@@ -90,15 +90,15 @@ extension AppDelegate: CLLocationManagerDelegate {
         didRangeBeacons beacons: [AnyObject]!,
         inRegion region: CLBeaconRegion!) {
             // Pass the array of beacons to the View Controller and tell the table view to update itself
-            let viewController:ViewController = window!.rootViewController as ViewController
-            viewController.beacons = beacons as [CLBeacon]?
+            let viewController:ViewController = window!.rootViewController as! ViewController
+            viewController.beacons = beacons as! [CLBeacon]?
             viewController.tableView!.reloadData()
             
             NSLog("didRangeBeacons");
             var message:String = ""
             
             if(beacons.count > 0) {
-                let nearestBeacon:CLBeacon = beacons[0] as CLBeacon
+                let nearestBeacon:CLBeacon = beacons[0] as! CLBeacon
                 
                 // If the proximity hasn't changed or is temporarily unknown, the method returns and doesn't re-alert us.
                 if(nearestBeacon.proximity == lastProximity ||
@@ -127,7 +127,7 @@ extension AppDelegate: CLLocationManagerDelegate {
     // Logs and alerts us of the system-level region entry/exit.
     func locationManager(manager: CLLocationManager!,
         didEnterRegion region: CLRegion!) {
-            manager.startRangingBeaconsInRegion(region as CLBeaconRegion)
+            manager.startRangingBeaconsInRegion(region as! CLBeaconRegion)
             manager.startUpdatingLocation()
             
             NSLog("You entered the region")
@@ -136,7 +136,7 @@ extension AppDelegate: CLLocationManagerDelegate {
     
     func locationManager(manager: CLLocationManager!,
         didExitRegion region: CLRegion!) {
-            manager.stopRangingBeaconsInRegion(region as CLBeaconRegion)
+            manager.stopRangingBeaconsInRegion(region as! CLBeaconRegion)
             manager.stopUpdatingLocation()
             
             NSLog("You exited the region")
