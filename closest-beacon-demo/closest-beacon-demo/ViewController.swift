@@ -12,7 +12,7 @@ import CoreLocation
 class ViewController: UIViewController, CLLocationManagerDelegate {
     let locationManager = CLLocationManager()
     let region = CLBeaconRegion(proximityUUID:
-        NSUUID(UUIDString: "E2C56DB5-DFFB-48D2-B060-D0F5A71096E0")!, identifier: "AprilBrothers")
+        NSUUID(UUIDString: "11231989-1989-1989-1989-112319891989")!, identifier: "Gimbal")
     let colors = [
         0: UIColor(red: 142/255, green: 212/255, blue: 220/255, alpha: 1),
         1: UIColor(red: 162/255, green: 213/255, blue: 181/255, alpha: 1)
@@ -47,5 +47,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                 print("unknown minor value \(closestBeacon.minor)")
             }
         }
+        print (beacons); // testing output
+        print (knownBeacons.count)
     }
 }
