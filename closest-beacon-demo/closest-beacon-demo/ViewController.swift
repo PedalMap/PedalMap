@@ -11,6 +11,8 @@ import CoreLocation
 
 class ViewController: UIViewController, CLLocationManagerDelegate {
     let locationManager = CLLocationManager()
+    var LatitudeGPS = NSString()
+    var LongitudeGPS = NSString()
     let region = CLBeaconRegion(proximityUUID:
         NSUUID(UUIDString: "11231989-1989-1989-1989-112319891989")!, identifier: "Gimbal")
     let colors = [
@@ -26,6 +28,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         if (CLLocationManager.authorizationStatus() != CLAuthorizationStatus.AuthorizedWhenInUse) {
             locationManager.requestWhenInUseAuthorization()
         }
+        updateLocation()
 
         locationManager.startRangingBeaconsInRegion(region)
     }
@@ -47,7 +50,34 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                 print("unknown minor value \(closestBeacon.minor)")
             }
         }
-        print (beacons); // testing output
-        print (knownBeacons.count)
+        
+        // print testing output for beacons
+        
+        print (knownBeacons);
+        print (knownBeacons.count);
+        for beacon in knownBeacons{
+            print(beacon.proximity.rawValue);
+            print(beacon.accuracy);
+            print (CLLocationManager.locationServicesEnabled());
+        }
+    }
+    
+    // update location of user based on location services
+    
+    func updateLocation() {
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            locationManager.startUpdatingLocation()
+        }
+    }
+    
+    // print user lat long
+    
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        LatitudeGPS = String(format: "%.6f", manager.location!.coordinate.latitude)
+        LongitudeGPS = String(format: "%.6f", manager.location!.coordinate.longitude)
+        print("Latitude - \(LatitudeGPS)")
+        print("Longitude - \(LongitudeGPS)")
     }
 }
