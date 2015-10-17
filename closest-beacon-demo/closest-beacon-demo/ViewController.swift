@@ -53,12 +53,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         
         // print testing output for beacons
         
-        print (knownBeacons);
-        print (knownBeacons.count);
+      //  print (knownBeacons);
+      //  print (knownBeacons.count);
         for beacon in knownBeacons{
             print(beacon.proximity.rawValue);
-            print(beacon.accuracy);
-            print (CLLocationManager.locationServicesEnabled());
+            if (beacon.proximity.rawValue == 1) {
+                print(LatitudeGPS);
+                print(LongitudeGPS)
+            }
+        //    print(beacon.accuracy);
+        //    print (CLLocationManager.locationServicesEnabled());
         }
     }
     
@@ -77,7 +81,5 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         LatitudeGPS = String(format: "%.6f", manager.location!.coordinate.latitude)
         LongitudeGPS = String(format: "%.6f", manager.location!.coordinate.longitude)
-        print("Latitude - \(LatitudeGPS)")
-        print("Longitude - \(LongitudeGPS)")
     }
 }
