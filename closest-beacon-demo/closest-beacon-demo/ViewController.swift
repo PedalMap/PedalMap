@@ -14,11 +14,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     var LatitudeGPS = NSString()
     var LongitudeGPS = NSString()
     let region = CLBeaconRegion(proximityUUID:
-        NSUUID(UUIDString: "11231989-1989-1989-1989-112319891989")!, identifier: "Gimbal")
-    let colors = [
-        0: UIColor(red: 142/255, green: 212/255, blue: 220/255, alpha: 1),
-        1: UIColor(red: 162/255, green: 213/255, blue: 181/255, alpha: 1)
-    ]
+        NSUUID(UUIDString: "11231989-1989-1989-1989-112319891989")!, identifier: "Bicycle")
+    
+    var beaconList = [Beacon]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,7 +27,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             locationManager.requestWhenInUseAuthorization()
         }
         updateLocation()
-
         locationManager.startRangingBeaconsInRegion(region)
     }
     
@@ -41,28 +38,32 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     func locationManager(manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], inRegion region: CLBeaconRegion) {
         let knownBeacons = beacons.filter{ $0.proximity != CLProximity.Unknown }
         // NOTE: This assumes that closest beacon is first in the array. Not fit for production
-        if (knownBeacons.count > 0) {
-            let closestBeacon = knownBeacons[0] as CLBeacon
-            if let color = self.colors[closestBeacon.minor.integerValue] {
-                self.view.backgroundColor = color
-            } else {
-                self.view.backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 1)
-                print("unknown minor value \(closestBeacon.minor)")
-            }
+        for x in knownBeacons {
+            let beacon = Beacon()
+            beacon.Major = x.major.integerValue
+            beacon.Minor = x.minor.integerValue
+            beacon.RSSI = x.rssi
+         // TODO: loop through knownbeacons array and make sure that beacon doesn't already exist
+            beaconList.append(beacon)
+        // TODO: destroy beacons that don't exist
         }
         
         // print testing output for beacons
         
-      //  print (knownBeacons);
-      //  print (knownBeacons.count);
+        print (region.proximityUUID);
+        print (region.identifier);
+        print (knownBeacons);
+        print (knownBeacons.count);
         for beacon in knownBeacons{
             print(beacon.proximity.rawValue);
             if (beacon.proximity.rawValue == 1) {
                 print(LatitudeGPS);
                 print(LongitudeGPS)
             }
-        //    print(beacon.accuracy);
-        //    print (CLLocationManager.locationServicesEnabled());
+        print(beacon.accuracy);
+        print (CLLocationManager.locationServicesEnabled());
+        print (beacon.rssi);
+        
         }
     }
     
