@@ -15,7 +15,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     var LongitudeGPS = NSString()
     let region = CLBeaconRegion(proximityUUID:
         NSUUID(UUIDString: "11231989-1989-1989-1989-112319891989")!, identifier: "Bicycle")
-    
     var beaconList = [Beacon]()
     
     override func viewDidLoad() {
@@ -35,6 +34,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         // Dispose of any resources that can be recreated.
     }
     
+    // Takes a list of beacons and checks to see if a beacon with a given major and minor matches a beacon in the list
+    func isBeaconInList(list: [Beacon], beacon: Beacon) -> Beacon? {
+        for b in list {
+            if (b.Major == beacon.Major && b.Minor == beacon.Minor) {
+                return b
+            }
+        }
+        return nil
+    }
+    
     func locationManager(manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], inRegion region: CLBeaconRegion) {
         let knownBeacons = beacons.filter{ $0.proximity != CLProximity.Unknown }
         // NOTE: This assumes that closest beacon is first in the array. Not fit for production
@@ -43,14 +52,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             beacon.Major = x.major.integerValue
             beacon.Minor = x.minor.integerValue
             beacon.RSSI = x.rssi
-         // TODO: loop through knownbeacons array and make sure that beacon doesn't already exist
-            beaconList.append(beacon)
+            let inList = isBeaconInList(beaconList, beacon: beacon)
+            if (inList != nil)  {
+                beacon.RSSI = x.rssi
+            } else {
+                beaconList.append(beacon)
+            }
         // TODO: destroy beacons that don't exist
         }
         
         // print testing output for beacons
         
-        print (region.proximityUUID);
+        /*print (region.proximityUUID);
         print (region.identifier);
         print (knownBeacons);
         print (knownBeacons.count);
@@ -64,7 +77,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         print (CLLocationManager.locationServicesEnabled());
         print (beacon.rssi);
         
-        }
+        }*/
     }
     
     // update location of user based on location services
