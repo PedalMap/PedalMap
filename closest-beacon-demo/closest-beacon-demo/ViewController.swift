@@ -59,6 +59,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                 beaconList.append(beacon)
             }
         // TODO: destroy beacons that don't exist
+        print (beaconList)
+        print (beacon.Major)
+        print (beacon.Minor)
+        print (beacon.RSSI)
+            
         }
         
         // print testing output for beacons
