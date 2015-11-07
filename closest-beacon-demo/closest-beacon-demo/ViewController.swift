@@ -35,6 +35,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     // Takes a list of beacons and checks to see if a beacon with a given major and minor matches a beacon in the list
+    // TODO: make key be a pair of major/minor. Make a pair that is a struct and has 2 integers
     func isBeaconInList(list: [Beacon], beacon: Beacon) -> Beacon? {
         for b in list {
             if (b.Major == beacon.Major && b.Minor == beacon.Minor) {
@@ -54,7 +55,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             beacon.RSSI = x.rssi
             let inList = isBeaconInList(beaconList, beacon: beacon)
             if (inList != nil)  {
-                beacon.RSSI = x.rssi
+                beacon.RSSI = x.rssi // make this a method that we update and call here instead of doing it straight up
             } else {
                 beaconList.append(beacon)
             }

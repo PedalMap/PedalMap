@@ -10,7 +10,10 @@ import Foundation
 import UIKit
 import CoreLocation
 
-class Beacon {
+class Beacon : CustomStringConvertible {
+    var description: String {
+        return "Beaacon: {\(Major), \(Minor)}"
+    }
     var Major = Int()
     var Minor = Int()
     var RSSI = Int()
