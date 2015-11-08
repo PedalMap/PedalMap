@@ -12,11 +12,17 @@ import CoreLocation
 
 class Beacon : CustomStringConvertible {
     var description: String {
-        return "Beaacon: {\(Major), \(Minor)}"
+        return "Beacon {\(Major), \(Minor)}"
     }
     var Major = Int()
     var Minor = Int()
     var RSSI = Int()
+
+    // creates unique key for identifying a beacon with a major/minor pair
+    
+    func key() -> Int {
+        return Major << 16 + Minor // bitwise left shift operator
+    }
 }
 
 

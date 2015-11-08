@@ -15,7 +15,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     var LongitudeGPS = NSString()
     let region = CLBeaconRegion(proximityUUID:
         NSUUID(UUIDString: "11231989-1989-1989-1989-112319891989")!, identifier: "Bicycle")
-    var beaconList = [Beacon]()
+    var beaconDict = [Int: Beacon]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,11 +35,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     // Takes a list of beacons and checks to see if a beacon with a given major and minor matches a beacon in the list
-    // TODO: make key be a pair of major/minor. Make a pair that is a struct and has 2 integers
-    func isBeaconInList(list: [Beacon], beacon: Beacon) -> Beacon? {
-        for b in list {
-            if (b.Major == beacon.Major && b.Minor == beacon.Minor) {
-                return b
+    // TODO: make key be a pair of major/minor. Make a pair that is a struct and has 2 integers. can do this by doing let k = major << 16 + minor
+    func isBeaconInDict(dict: [Int: Beacon], beacon: Beacon) -> Beacon? {
+        for (key, value) in dict {
+            if (key == beacon.key()) {
+                return value
             }
         }
         return nil
@@ -53,18 +53,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             beacon.Major = x.major.integerValue
             beacon.Minor = x.minor.integerValue
             beacon.RSSI = x.rssi
-            let inList = isBeaconInList(beaconList, beacon: beacon)
-            if (inList != nil)  {
+            let inDict = isBeaconInDict(beaconDict, beacon: beacon)
+            if (inDict != nil)  {
                 beacon.RSSI = x.rssi // make this a method that we update and call here instead of doing it straight up
             } else {
-                beaconList.append(beacon)
+                beaconDict[beacon.key()] = beacon
             }
         // TODO: destroy beacons that don't exist
-        print (beaconList)
+        print (beaconDict)
         print (beacon.Major)
         print (beacon.Minor)
         print (beacon.RSSI)
-            
         }
         
         // print testing output for beacons
