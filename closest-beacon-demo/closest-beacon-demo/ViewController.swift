@@ -34,8 +34,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         // Dispose of any resources that can be recreated.
     }
     
-    // Takes a list of beacons and checks to see if a beacon with a given major and minor matches a beacon in the list
-    // TODO: make key be a pair of major/minor. Make a pair that is a struct and has 2 integers. can do this by doing let k = major << 16 + minor
+    // Takes a dictionary of beacons and checks to see if a beacon with a given unique key matches a beacon in the dictionary
     func isBeaconInDict(dict: [Int: Beacon], beacon: Beacon) -> Beacon? {
         for (key, value) in dict {
             if (key == beacon.key()) {
@@ -43,6 +42,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             }
         }
         return nil
+    }
+    
+    // make beacon.RSSI update below in the function here and call it below instead
+    func updateBeacon(beacon: Beacon) {
     }
     
     func locationManager(manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], inRegion region: CLBeaconRegion) {
