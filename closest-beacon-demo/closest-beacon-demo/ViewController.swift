@@ -47,11 +47,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     func locationManager(manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], inRegion region: CLBeaconRegion) {
         let knownBeacons = beacons.filter{ $0.proximity != CLProximity.Unknown }
         // NOTE: This assumes that closest beacon is first in the array. Not fit for production
+        // create a beacon object from each beacon in range and assign it a major, minor, and RSSI
         for x in knownBeacons {
             let beacon = Beacon()
             beacon.Major = x.major.integerValue
             beacon.Minor = x.minor.integerValue
             beacon.RSSI = x.rssi
+        // if beeacon already exists in beaconDict, update RSSI, otherwise add it to the beaconDict
             let inDict = isBeaconInDict(beaconDict, beacon: beacon)
             if (inDict != nil)  {
                 beacon.update(x.rssi)
@@ -63,16 +65,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             print (beacon.Minor)
             print (beacon.RSSI)
         }
-        
-        /* TODO: destroy beacons that don't exist. To destroy a beacon, we do two things
-        1) call the outOfRange function
-        2) remove the beacon from the beacon dictionary
-        in order to do this, we need to loop through the dictionary and look for beacons that exist in the dictionary but NOT in the range...then we kindly address them with the outOfRange() function and then we destroy!!! To do this, we need nested loop. Inner loop will run through all of the knownBeacons and check them against a dictionary item, the outside loop will increment the dictionary down one and check for the next dictionary item. */
-        
+        // removes all beacons from the beaconDict that are in the beaconDict but not in range
         for z in knownBeacons {
             for y in beaconDict {
                 if (y.1.compareToCLBeacon(z) == false) {
-                    y.1.outOfRange()
+                    y.1.outOfRange() // method that takes actions just before beacon is removed
                     beaconDict[y.0] = nil // remove beacon from dictionary
                 }
                 else {
