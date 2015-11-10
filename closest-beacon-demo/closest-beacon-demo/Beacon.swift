@@ -23,6 +23,24 @@ class Beacon : CustomStringConvertible {
     func key() -> Int {
         return Major << 16 + Minor // bitwise left shift operator
     }
+    
+    // function that updates beacons that already exist in our beacon dictionary
+    func update(rssi: Int) {
+        RSSI = rssi
+    }
+    
+    // function to do something to beacons in our dictionary once we don't detect them in our range anymore
+    func outOfRange() {
+    }
+    
+    func compareToCLBeacon (beacon: CLBeacon) -> Bool {
+        if (beacon.major.integerValue == Major && beacon.minor.integerValue == Minor) {
+            return true
+        }
+        else {
+            return false
+        }
+    }
 }
 
 

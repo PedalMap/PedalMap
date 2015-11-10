@@ -44,10 +44,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         return nil
     }
     
-    // make beacon.RSSI update below in the function here and call it below instead
-    func updateBeacon(beacon: Beacon) {
-    }
-    
     func locationManager(manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], inRegion region: CLBeaconRegion) {
         let knownBeacons = beacons.filter{ $0.proximity != CLProximity.Unknown }
         // NOTE: This assumes that closest beacon is first in the array. Not fit for production
@@ -58,15 +54,31 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             beacon.RSSI = x.rssi
             let inDict = isBeaconInDict(beaconDict, beacon: beacon)
             if (inDict != nil)  {
-                beacon.RSSI = x.rssi // make this a method that we update and call here instead of doing it straight up
+                beacon.update(x.rssi)
             } else {
                 beaconDict[beacon.key()] = beacon
             }
-        // TODO: destroy beacons that don't exist
-        print (beaconDict)
-        print (beacon.Major)
-        print (beacon.Minor)
-        print (beacon.RSSI)
+            print (beaconDict)
+            print (beacon.Major)
+            print (beacon.Minor)
+            print (beacon.RSSI)
+        }
+        
+        /* TODO: destroy beacons that don't exist. To destroy a beacon, we do two things
+        1) call the outOfRange function
+        2) remove the beacon from the beacon dictionary
+        in order to do this, we need to loop through the dictionary and look for beacons that exist in the dictionary but NOT in the range...then we kindly address them with the outOfRange() function and then we destroy!!! To do this, we need nested loop. Inner loop will run through all of the knownBeacons and check them against a dictionary item, the outside loop will increment the dictionary down one and check for the next dictionary item. */
+        
+        for z in knownBeacons {
+            for y in beaconDict {
+                if (y.1.compareToCLBeacon(z) == false) {
+                    y.1.outOfRange()
+                    beaconDict[y.0] = nil // remove beacon from dictionary
+                }
+                else {
+                    return
+                }
+            }
         }
         
         // print testing output for beacons
