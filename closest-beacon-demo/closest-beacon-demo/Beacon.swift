@@ -33,6 +33,7 @@ class Beacon : CustomStringConvertible {
     func outOfRange() {
     }
     
+    // function that checks to see if a beacon object is in range
     func compareToCLBeacon (beacon: CLBeacon) -> Bool {
         if (beacon.major.integerValue == Major && beacon.minor.integerValue == Minor) {
             return true

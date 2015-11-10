@@ -60,10 +60,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             } else {
                 beaconDict[beacon.key()] = beacon
             }
-            print (beaconDict)
-            print (beacon.Major)
-            print (beacon.Minor)
-            print (beacon.RSSI)
         }
         // removes all beacons from the beaconDict that are in the beaconDict but not in range
         for z in knownBeacons {
@@ -77,24 +73,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                 }
             }
         }
-        
-        // print testing output for beacons
-        
-        /*print (region.proximityUUID);
-        print (region.identifier);
-        print (knownBeacons);
-        print (knownBeacons.count);
-        for beacon in knownBeacons{
-            print(beacon.proximity.rawValue);
-            if (beacon.proximity.rawValue == 1) {
-                print(LatitudeGPS);
-                print(LongitudeGPS)
-            }
-        print(beacon.accuracy);
-        print (CLLocationManager.locationServicesEnabled());
-        print (beacon.rssi);
-        
-        }*/
     }
     
     // update location of user based on location services
