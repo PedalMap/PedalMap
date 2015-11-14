@@ -66,21 +66,23 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         }
         // removes all beacons from the beaconDict that are in the beaconDict but not in range (part of knownBeacons array)
         for z in beaconDict {
-            for y in knownBeacons {
-                var counter = 1
-                if (z.1.compareToCLBeacon(y) == true) {
+            for var index = 0; index < numKnownBeacons; ++index {
+                print ("Check #" + String(index + 1) + ": is beacon {\(z.1.Major), \(z.1.Minor)} in range?")
+                // When we find a beacon in range that matches a beacon in the dictionary, step out of loop iterating through beacons in range and move to next item in the dictionary
+                if (z.1.compareToCLBeacon(knownBeacons[index]) == true) {
                     print ("Beacon {\(z.1.Major), \(z.1.Minor)} exists nearby!")
+                    index = numKnownBeacons // ends the inner loop when beacon nearby matches beacon in dictionary
                 }
-                else if (z.1.compareToCLBeacon(y) == false && counter < numKnownBeacons) {
-                    print ("Beacon {\(z.1.Major), \(z.1.Minor)} does not match")
-                    print ("No match on try number " + String(counter) + " of " + String(numKnownBeacons) + " but we will check again!")
-                    counter++
+                // When a beacon in range doesn't match the beacon in dictionary, check the next beacon in range against same beacon in dictionary (increment inner loop)
+                else if (z.1.compareToCLBeacon(knownBeacons[index]) == false && index < (numKnownBeacons - 1)) {
+                    print ("No match on check number " + String(index + 1) + " of " + String(numKnownBeacons) + " but we will check again!")
                 }
+                // After we have checked all beacons in range (incremented through entire inner loop) but haven't found a match in range for the item in the dictionary, remove item in dictionary
                 else {
+                    print ("No match on try number " + String(index + 1) + " of " + String(numKnownBeacons) + ". Removing beacon from dictionary")
                     z.1.outOfRange() // method that takes actions just before beacon is removed
                     beaconDict[z.0] = nil // remove beacon from dictionary
                 }
-                return
             }
         }
     }
