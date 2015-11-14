@@ -31,6 +31,7 @@ class Beacon : CustomStringConvertible {
     
     // function to do something to beacons in our dictionary once we don't detect them in our range anymore
     func outOfRange() {
+        print ("Beacon {\(Major), \(Minor)} removed from beaconDict")
     }
     
     // function that checks to see if a beacon object is in range

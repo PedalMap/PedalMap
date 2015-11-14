@@ -46,6 +46,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     
     func locationManager(manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], inRegion region: CLBeaconRegion) {
         let knownBeacons = beacons.filter{ $0.proximity != CLProximity.Unknown }
+        let numKnownBeacons = knownBeacons.count
         // NOTE: This assumes that closest beacon is first in the array. Not fit for production
         // create a beacon object from each beacon in range and assign it a major, minor, and RSSI
         for x in knownBeacons {
@@ -59,18 +60,27 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                 beacon.update(x.rssi)
             } else {
                 beaconDict[beacon.key()] = beacon
+                print ("Beacon {\(beacon.Major), \(beacon.Minor)} added to beaconDict")
+                print ("beaconDict contains " + String(beaconDict.count) + " beacons")
             }
         }
-        // removes all beacons from the beaconDict that are in the beaconDict but not in range
-        for z in knownBeacons {
-            for y in beaconDict {
-                if (y.1.compareToCLBeacon(z) == false) {
-                    y.1.outOfRange() // method that takes actions just before beacon is removed
-                    beaconDict[y.0] = nil // remove beacon from dictionary
+        // removes all beacons from the beaconDict that are in the beaconDict but not in range (part of knownBeacons array)
+        for z in beaconDict {
+            for y in knownBeacons {
+                var counter = 1
+                if (z.1.compareToCLBeacon(y) == true) {
+                    print ("Beacon {\(z.1.Major), \(z.1.Minor)} exists nearby!")
+                }
+                else if (z.1.compareToCLBeacon(y) == false && counter < numKnownBeacons) {
+                    print ("Beacon {\(z.1.Major), \(z.1.Minor)} does not match on try number " + String(counter) + " but we are still checking!")
+                    counter++
+                    print (counter)
                 }
                 else {
-                    return
+                    z.1.outOfRange() // method that takes actions just before beacon is removed
+                    beaconDict[z.0] = nil // remove beacon from dictionary
                 }
+                return
             }
         }
     }
