@@ -72,9 +72,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                     print ("Beacon {\(z.1.Major), \(z.1.Minor)} exists nearby!")
                 }
                 else if (z.1.compareToCLBeacon(y) == false && counter < numKnownBeacons) {
-                    print ("Beacon {\(z.1.Major), \(z.1.Minor)} does not match on try number " + String(counter) + " but we are still checking!")
+                    print ("Beacon {\(z.1.Major), \(z.1.Minor)} does not match")
+                    print ("No match on try number " + String(counter) + " of " + String(numKnownBeacons) + " but we will check again!")
                     counter++
-                    print (counter)
                 }
                 else {
                     z.1.outOfRange() // method that takes actions just before beacon is removed
