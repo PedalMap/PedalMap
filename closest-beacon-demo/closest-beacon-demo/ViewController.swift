@@ -46,7 +46,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     
     func locationManager(manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], inRegion region: CLBeaconRegion) {
         let knownBeacons = beacons.filter{ $0.proximity != CLProximity.Unknown }
-        let numKnownBeacons = knownBeacons.count
         // NOTE: This assumes that closest beacon is first in the array. Not fit for production
         // create a beacon object from each beacon in range and assign it a major, minor, and RSSI
         for x in knownBeacons {
@@ -65,24 +64,25 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             }
         }
         // removes all beacons from the beaconDict that are in the beaconDict but not in range (part of knownBeacons array)
-        for z in beaconDict {
-            for var index = 0; index < numKnownBeacons; ++index {
-                print ("Check #" + String(index + 1) + ": is beacon {\(z.1.Major), \(z.1.Minor)} in range?")
+          for z in beaconDict {
+            var found = false
+            for y in knownBeacons {
+                print ("Is beacon {\(z.1.Major), \(z.1.Minor)} in range?")
                 // When we find a beacon in range that matches a beacon in the dictionary, step out of loop iterating through beacons in range and move to next item in the dictionary
-                if (z.1.compareToCLBeacon(knownBeacons[index]) == true) {
+                if (z.1.compareToCLBeacon(y) == true) {
                     print ("Beacon {\(z.1.Major), \(z.1.Minor)} exists nearby!")
-                    index = numKnownBeacons // ends the inner loop when beacon nearby matches beacon in dictionary
+                    found = true
+                    break // ends the inner loop when beacon nearby matches beacon in dictionary
                 }
                 // When a beacon in range doesn't match the beacon in dictionary, check the next beacon in range against same beacon in dictionary (increment inner loop)
-                else if (z.1.compareToCLBeacon(knownBeacons[index]) == false && index < (numKnownBeacons - 1)) {
-                    print ("No match on check number " + String(index + 1) + " of " + String(numKnownBeacons) + " but we will check again!")
+                else {
+                    print ("No match but we will check again!")
                 }
                 // After we have checked all beacons in range (incremented through entire inner loop) but haven't found a match in range for the item in the dictionary, remove item in dictionary
-                else {
-                    print ("No match on try number " + String(index + 1) + " of " + String(numKnownBeacons) + ". Removing beacon from dictionary")
-                    z.1.outOfRange() // method that takes actions just before beacon is removed
-                    beaconDict[z.0] = nil // remove beacon from dictionary
-                }
+            }
+            if (!found) {
+                z.1.outOfRange() // method that takes actions just before beacon is removed
+                beaconDict[z.0] = nil // remove beacon from dictionary
             }
         }
     }
