@@ -38,9 +38,8 @@ class Beacon : CustomStringConvertible {
         if (rssi == RSSI) { return }
         RSSI = rssi
         
-        // Make some decisions with the new RSSI value.
-        if ride == nil {
-            if (RSSI > -40) {
+        if (ride == nil) {
+            if (RSSI > -50) {
                 ride = Ride()
                 ride!.startRide()
             }
