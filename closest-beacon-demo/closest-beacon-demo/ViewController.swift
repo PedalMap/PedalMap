@@ -49,10 +49,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         // NOTE: This assumes that closest beacon is first in the array. Not fit for production
         // create a beacon object from each beacon in range and assign it a major, minor, and RSSI
         for x in knownBeacons {
-            let beacon = Beacon()
-            beacon.Major = x.major.integerValue
-            beacon.Minor = x.minor.integerValue
-            beacon.RSSI = x.rssi
+            let beacon = Beacon(major: x.major.integerValue, minor: x.minor.integerValue, rssi: x.rssi)
         // if beeacon already exists in beaconDict, update RSSI, otherwise add it to the beaconDict
             let inDict = isBeaconInDict(beaconDict, beacon: beacon)
             if (inDict != nil)  {
@@ -67,16 +64,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
           for z in beaconDict {
             var found = false
             for y in knownBeacons {
-                print ("Is beacon {\(z.1.Major), \(z.1.Minor)} in range?")
                 // When we find a beacon in range that matches a beacon in the dictionary, step out of loop iterating through beacons in range and move to next item in the dictionary
                 if (z.1.compareToCLBeacon(y) == true) {
-                    print ("Beacon {\(z.1.Major), \(z.1.Minor)} exists nearby!")
                     found = true
                     break // ends the inner loop when beacon nearby matches beacon in dictionary
                 }
                 // When a beacon in range doesn't match the beacon in dictionary, check the next beacon in range against same beacon in dictionary (increment inner loop)
                 else {
-                    print ("No match but we will check again!")
                 }
                 // After we have checked all beacons in range (incremented through entire inner loop) but haven't found a match in range for the item in the dictionary, remove item in dictionary
             }

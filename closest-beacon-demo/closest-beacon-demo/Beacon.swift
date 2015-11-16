@@ -17,7 +17,16 @@ class Beacon : CustomStringConvertible {
     var Major = Int()
     var Minor = Int()
     var RSSI = Int()
+    
+    var ride: Ride?
 
+    init(major: Int, minor: Int, rssi: Int) {
+        Major = major
+        Minor = minor
+        RSSI = Int.min
+        update(rssi)
+    }
+    
     // creates unique key for identifying a beacon with a major/minor pair
     
     func key() -> Int {
@@ -26,11 +35,26 @@ class Beacon : CustomStringConvertible {
     
     // function that updates beacons that already exist in our beacon dictionary
     func update(rssi: Int) {
+        if (rssi == RSSI) { return }
         RSSI = rssi
+        
+        // Make some decisions with the new RSSI value.
+        if ride == nil {
+            if (RSSI > -40) {
+                ride = Ride()
+                ride!.startRide()
+            }
+        } else {
+            if (RSSI < -80) {
+                ride!.endRide()
+                ride = nil
+            }
+        }
     }
     
     // function to do something to beacons in our dictionary once we don't detect them in our range anymore
     func outOfRange() {
+        update(Int.min) // ends our ride by running through the update function before we remove the beacon from the dictionary
         print ("Beacon {\(Major), \(Minor)} removed from beaconDict")
     }
     
