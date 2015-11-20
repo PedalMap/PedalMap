@@ -10,6 +10,14 @@ import Foundation
 
 class Ride {
     
+    init() {
+        print ("Ride constructed")
+    }
+    
+    deinit {
+        print ("Ride deconstructed")
+    }
+    
     func startRide() {
         print ("Your ride has started!")
     }

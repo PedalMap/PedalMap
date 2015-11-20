@@ -24,6 +24,7 @@ class Beacon : CustomStringConvertible {
         Major = major
         Minor = minor
         RSSI = Int.min
+        print ("Created beacon: \(self)")
         update(rssi)
     }
     
@@ -40,15 +41,19 @@ class Beacon : CustomStringConvertible {
         
         if (ride == nil) {
             if (RSSI > -50) {
-                ride = Ride()
-                ride!.startRide()
+                self.ride = Ride()
+                self.ride!.startRide()
             }
         } else {
             if (RSSI < -80) {
-                ride!.endRide()
-                ride = nil
+                self.ride!.endRide()
+                self.ride = nil
             }
         }
+    }
+    
+    deinit {
+        print ("Destroying beacon: \(self)")
     }
     
     // function to do something to beacons in our dictionary once we don't detect them in our range anymore

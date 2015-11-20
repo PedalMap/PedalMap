@@ -35,9 +35,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     // Takes a dictionary of beacons and checks to see if a beacon with a given unique key matches a beacon in the dictionary
-    func isBeaconInDict(dict: [Int: Beacon], beacon: Beacon) -> Beacon? {
+    func beaconInDict(dict: [Int: Beacon], major: Int, minor: Int) -> Beacon? {
         for (key, value) in dict {
-            if (key == beacon.key()) {
+            if (key == minor) { // Do the munging of major and minor, buggy!!!
                 return value
             }
         }
@@ -49,12 +49,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         // NOTE: This assumes that closest beacon is first in the array. Not fit for production
         // create a beacon object from each beacon in range and assign it a major, minor, and RSSI
         for x in knownBeacons {
-            let beacon = Beacon(major: x.major.integerValue, minor: x.minor.integerValue, rssi: x.rssi)
-        // if beeacon already exists in beaconDict, update RSSI, otherwise add it to the beaconDict
-            let inDict = isBeaconInDict(beaconDict, beacon: beacon)
-            if (inDict != nil)  {
+            // if beeacon already exists in beaconDict, update RSSI, otherwise add it to the beaconDict
+            if let beacon = beaconInDict(beaconDict, major: x.major.integerValue, minor: x.minor.integerValue) {
                 beacon.update(x.rssi)
             } else {
+                let beacon = Beacon(major: x.major.integerValue, minor: x.minor.integerValue, rssi: x.rssi)
                 beaconDict[beacon.key()] = beacon
                 print ("Beacon {\(beacon.Major), \(beacon.Minor)} added to beaconDict")
                 print ("beaconDict contains " + String(beaconDict.count) + " beacons")
