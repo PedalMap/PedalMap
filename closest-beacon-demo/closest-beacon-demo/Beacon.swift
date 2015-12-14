@@ -31,7 +31,11 @@ class Beacon : CustomStringConvertible {
     // creates unique key for identifying a beacon with a major/minor pair
     
     func key() -> Int {
-        return Major << 16 + Minor // bitwise left shift operator
+        return Beacon.key(Major, minor: Minor)
+    }
+    
+    static func key(major: Int, minor: Int) -> Int {
+        return major << 16 + minor // bitwise left shift operator
     }
     
     // function that updates beacons that already exist in our beacon dictionary
@@ -41,7 +45,7 @@ class Beacon : CustomStringConvertible {
         
         if (ride == nil) {
             if (RSSI > -50) {
-                self.ride = Ride()
+                self.ride = Ride(b: self)
                 self.ride!.startRide()
             }
         } else {

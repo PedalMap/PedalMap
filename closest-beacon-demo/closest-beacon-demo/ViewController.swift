@@ -25,7 +25,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         if (CLLocationManager.authorizationStatus() != CLAuthorizationStatus.AuthorizedWhenInUse) {
             locationManager.requestWhenInUseAuthorization()
         }
-        updateLocation()
         locationManager.startRangingBeaconsInRegion(region)
     }
     
@@ -36,9 +35,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     
     // Takes a dictionary of beacons and checks to see if a beacon with a given unique key matches a beacon in the dictionary
     func beaconInDict(dict: [Int: Beacon], major: Int, minor: Int) -> Beacon? {
-        for (key, value) in dict {
-            if (key == minor) { // Do the munging of major and minor, buggy!!!
-                return value
+        for (key, beacon) in dict {
+            if (key == Beacon.key(major, minor: minor)) {
+                return beacon
             }
         }
         return nil
@@ -78,22 +77,5 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                 beaconDict[z.0] = nil // remove beacon from dictionary
             }
         }
-    }
-    
-    // update location of user based on location services
-    
-    func updateLocation() {
-        if CLLocationManager.locationServicesEnabled() {
-            locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-            locationManager.startUpdatingLocation()
-        }
-    }
-    
-    // print user lat long
-    
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        LatitudeGPS = String(format: "%.6f", manager.location!.coordinate.latitude)
-        LongitudeGPS = String(format: "%.6f", manager.location!.coordinate.longitude)
     }
 }
