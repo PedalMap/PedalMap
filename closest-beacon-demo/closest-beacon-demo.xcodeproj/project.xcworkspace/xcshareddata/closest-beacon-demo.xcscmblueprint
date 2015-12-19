@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "7DF6A6D9B300B6316F3DCC96E8ADE84FA711C43F",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "5E5C19EA263AE4DDF2FEFAE32F180E8C4AD388DB" : 0,
+    "7DF6A6D9B300B6316F3DCC96E8ADE84FA711C43F" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "403A5292-AB48-4A40-91C7-B27499AA1282",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "5E5C19EA263AE4DDF2FEFAE32F180E8C4AD388DB" : "",
+    "7DF6A6D9B300B6316F3DCC96E8ADE84FA711C43F" : "PedalMap"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "closest-beacon-demo",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "closest-beacon-demo\/closest-beacon-demo.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/zbrowne\/datasciencecoursera.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "5E5C19EA263AE4DDF2FEFAE32F180E8C4AD388DB"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:PedalMap\/PedalMap.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "7DF6A6D9B300B6316F3DCC96E8ADE84FA711C43F"
+    }
+  ]
+}
