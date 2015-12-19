@@ -11,8 +11,6 @@ import CoreLocation
 
 class ViewController: UIViewController, CLLocationManagerDelegate {
     let locationManager = CLLocationManager()
-    var LatitudeGPS = NSString()
-    var LongitudeGPS = NSString()
     let region = CLBeaconRegion(proximityUUID:
         NSUUID(UUIDString: "11231989-1989-1989-1989-112319891989")!, identifier: "Bicycle")
     var beaconDict = [Int: Beacon]()

@@ -11,8 +11,8 @@ import CoreLocation
 
 class Ride: NSObject, CLLocationManagerDelegate {
     let locationManager = CLLocationManager()
-    var LatitudeGPS = NSString()
-    var LongitudeGPS = NSString()
+    var latitude = NSString()
+    var longitude = NSString()
     private unowned var beacon: Beacon
     
     init(b: Beacon) {
@@ -27,11 +27,11 @@ class Ride: NSObject, CLLocationManagerDelegate {
     func startRide() {
         print ("Your ride has started!")
         updateLocation()
-        print (LatitudeGPS)
-        print (LongitudeGPS)
     }
     
     func endRide() {
+        print (latitude)
+        print (longitude)
         print ("Your ride has ended :(")
     }
     // update location of user based on location services
@@ -41,12 +41,16 @@ class Ride: NSObject, CLLocationManagerDelegate {
             locationManager.delegate = self
             locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
             locationManager.startUpdatingLocation()
+            print ("updated location!")
         }
     }
     
-    func setLatLong(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        LatitudeGPS = String(format: "%.6f", manager.location!.coordinate.latitude)
-        LongitudeGPS = String(format: "%.6f", manager.location!.coordinate.longitude)
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+            let latestLocation: AnyObject = locations[locations.count - 1]
+            latitude = String(format: "%.4f",
+                latestLocation.coordinate.latitude)
+            longitude = String(format: "%.4f",
+                latestLocation.coordinate.longitude)
+        print (locations)
     }
-    
 }
