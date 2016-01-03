@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		002188141BF95F2200B9D4B1 /* Ride.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002188131BF95F2100B9D4B1 /* Ride.swift */; };
-		00273DF71C39BA7700A470F4 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 00273DF51C39BA7700A470F4 /* Model.xcdatamodeld */; };
 		0047D6B81A86E2D800C76A84 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0047D6B71A86E2D800C76A84 /* AppDelegate.swift */; };
 		0047D6BA1A86E2D800C76A84 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0047D6B91A86E2D800C76A84 /* ViewController.swift */; };
 		0047D6BD1A86E2D800C76A84 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0047D6BB1A86E2D800C76A84 /* Main.storyboard */; };
@@ -31,7 +30,6 @@
 
 /* Begin PBXFileReference section */
 		002188131BF95F2100B9D4B1 /* Ride.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ride.swift; sourceTree = "<group>"; };
-		00273DF61C39BA7700A470F4 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		0047D6B21A86E2D800C76A84 /* closest-beacon-demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "closest-beacon-demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0047D6B61A86E2D800C76A84 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0047D6B71A86E2D800C76A84 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -86,7 +84,6 @@
 			isa = PBXGroup;
 			children = (
 				0047D6B71A86E2D800C76A84 /* AppDelegate.swift */,
-				00273DF51C39BA7700A470F4 /* Model.xcdatamodeld */,
 				0047D6B91A86E2D800C76A84 /* ViewController.swift */,
 				0047D6BB1A86E2D800C76A84 /* Main.storyboard */,
 				0047D6BE1A86E2D800C76A84 /* Images.xcassets */,
@@ -231,7 +228,6 @@
 				0047D6B81A86E2D800C76A84 /* AppDelegate.swift in Sources */,
 				002188141BF95F2200B9D4B1 /* Ride.swift in Sources */,
 				00AE12571BD44134003CD742 /* Beacon.swift in Sources */,
-				00273DF71C39BA7700A470F4 /* Model.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -440,19 +436,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		00273DF51C39BA7700A470F4 /* Model.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				00273DF61C39BA7700A470F4 /* Model.xcdatamodel */,
-			);
-			currentVersion = 00273DF61C39BA7700A470F4 /* Model.xcdatamodel */;
-			path = Model.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 0047D6AA1A86E2D800C76A84 /* Project object */;
 }
