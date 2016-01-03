@@ -11,8 +11,8 @@ import CoreLocation
 
 class Ride: NSObject, CLLocationManagerDelegate {
     let locationManager = CLLocationManager()
-    var latitude = NSString()
-    var longitude = NSString()
+    var latitude = String()
+    var longitude = String()
     private unowned var beacon: Beacon
     
     init(b: Beacon) {
@@ -51,6 +51,6 @@ class Ride: NSObject, CLLocationManagerDelegate {
                 latestLocation.coordinate.latitude)
             longitude = String(format: "%.4f",
                 latestLocation.coordinate.longitude)
-        print (locations)
+        print (latitude + ", " + longitude)
     }
 }
