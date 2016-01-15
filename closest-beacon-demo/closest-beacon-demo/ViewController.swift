@@ -8,8 +8,10 @@
 
 import UIKit
 import CoreLocation
+import MapKit
 
 class ViewController: UIViewController, CLLocationManagerDelegate {
+    @IBOutlet weak var mapView: MKMapView!
     let locationManager = CLLocationManager()
     let region = CLBeaconRegion(proximityUUID:
         NSUUID(UUIDString: "11231989-1989-1989-1989-112319891989")!, identifier: "Bicycle")
@@ -76,4 +78,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             }
         }
     }
+}
+
+// MARK: - Map View delegate
+
+extension ViewController: MKMapViewDelegate {
 }

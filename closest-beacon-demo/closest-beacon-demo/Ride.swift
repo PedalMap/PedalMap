@@ -8,11 +8,13 @@
 
 import Foundation
 import CoreLocation
+import MapKit
 
 class Ride: NSObject, CLLocationManagerDelegate {
     let locationManager = CLLocationManager()
     var latitude = String()
     var longitude = String()
+    var rideCoordinates: [CLLocationCoordinate2D] = []    
     private unowned var beacon: Beacon
     
     init(b: Beacon) {
@@ -32,7 +34,15 @@ class Ride: NSObject, CLLocationManagerDelegate {
     func endRide() {
         print (latitude)
         print (longitude)
+        addRide()
         print ("Your ride has ended :(")
+    }
+
+    // Need to figure out how to get this MKPolyline in the ViewController somehow
+    func addRide() {
+        let coordinateCount = rideCoordinates.count
+        let myPolyline = MKPolyline(coordinates: &rideCoordinates, count: coordinateCount)
+        //mapView.addOverlay(myPolyline)
     }
     // update location of user based on location services
     
@@ -46,11 +56,12 @@ class Ride: NSObject, CLLocationManagerDelegate {
     }
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-            let latestLocation: AnyObject = locations[locations.count - 1]
+        let latestLocation = locations.last! as CLLocation
             latitude = String(format: "%.4f",
                 latestLocation.coordinate.latitude)
             longitude = String(format: "%.4f",
                 latestLocation.coordinate.longitude)
-        print (latitude + ", " + longitude)
+        let latestCoordinate = CLLocationCoordinate2D(latitude: latestLocation.coordinate.latitude, longitude: latestLocation.coordinate.longitude)
+        rideCoordinates.append(latestCoordinate)
     }
 }
