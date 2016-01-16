@@ -22,8 +22,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         // Do any additional setup after loading the view, typically from a nib.
         // TODO: Add case for when user denies authorization
         locationManager.delegate = self;
-        if (CLLocationManager.authorizationStatus() != CLAuthorizationStatus.AuthorizedWhenInUse) {
-            locationManager.requestWhenInUseAuthorization()
+        if (CLLocationManager.authorizationStatus() != CLAuthorizationStatus.AuthorizedAlways) {
+            locationManager.requestAlwaysAuthorization()
         }
         locationManager.startRangingBeaconsInRegion(region)
     }

@@ -45,12 +45,22 @@ class Ride: NSObject, CLLocationManagerDelegate {
         let myPolyline = MKPolyline(coordinates: &rideCoordinates, count: coordinateCount)
         mapView.addOverlay(myPolyline)
     }
+    
+    // zooms in to user's current location and moves the map to keep user's location centered accordingly
+    func trackUserOnMap() {
+        let spanX = 0.007
+        let spanY = 0.007
+        let newRegion = MKCoordinateRegion(center: mapView.userLocation.coordinate, span: MKCoordinateSpanMake(spanX, spanY))
+        mapView.setRegion(newRegion, animated: true)
+    }
+    
     // update location of user based on location services
     
     func updateLocation() {
         if CLLocationManager.locationServicesEnabled() {
             locationManager.delegate = self
             locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            locationManager.distanceFilter = 10
             locationManager.startUpdatingLocation()
             print ("updated location!")
         }
@@ -65,6 +75,7 @@ class Ride: NSObject, CLLocationManagerDelegate {
         let latestCoordinate = CLLocationCoordinate2D(latitude: latestLocation.coordinate.latitude, longitude: latestLocation.coordinate.longitude)
         rideCoordinates.append(latestCoordinate)
         addRide()
+        trackUserOnMap()
         print (rideCoordinates)
     }
 }

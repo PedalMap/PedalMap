@@ -175,6 +175,14 @@
 					0047D6B11A86E2D800C76A84 = {
 						CreatedOnToolsVersion = 6.1.1;
 						DevelopmentTeam = NJXXQ3AW8D;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Maps.iOS = {
+								enabled = 0;
+							};
+						};
 					};
 					0047D6C61A86E2D800C76A84 = {
 						CreatedOnToolsVersion = 6.1.1;
