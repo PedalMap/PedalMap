@@ -16,9 +16,11 @@ class Ride: NSObject, CLLocationManagerDelegate {
     var longitude = String()
     var rideCoordinates: [CLLocationCoordinate2D] = []    
     private unowned var beacon: Beacon
+    private unowned var mapView: MKMapView
     
-    init(b: Beacon) {
+    init(b: Beacon, mv: MKMapView) {
         beacon = b
+        mapView = mv
         print ("Ride constructed for Beacon {\(beacon.Major), \(beacon.Minor)}")
     }
     
@@ -34,7 +36,6 @@ class Ride: NSObject, CLLocationManagerDelegate {
     func endRide() {
         print (latitude)
         print (longitude)
-        addRide()
         print ("Your ride has ended :(")
     }
 
@@ -42,7 +43,7 @@ class Ride: NSObject, CLLocationManagerDelegate {
     func addRide() {
         let coordinateCount = rideCoordinates.count
         let myPolyline = MKPolyline(coordinates: &rideCoordinates, count: coordinateCount)
-        //mapView.addOverlay(myPolyline)
+        mapView.addOverlay(myPolyline)
     }
     // update location of user based on location services
     
@@ -63,5 +64,7 @@ class Ride: NSObject, CLLocationManagerDelegate {
                 latestLocation.coordinate.longitude)
         let latestCoordinate = CLLocationCoordinate2D(latitude: latestLocation.coordinate.latitude, longitude: latestLocation.coordinate.longitude)
         rideCoordinates.append(latestCoordinate)
+        addRide()
+        print (rideCoordinates)
     }
 }

@@ -52,7 +52,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             if let beacon = beaconInDict(beaconDict, major: x.major.integerValue, minor: x.minor.integerValue) {
                 beacon.update(x.rssi)
             } else {
-                let beacon = Beacon(major: x.major.integerValue, minor: x.minor.integerValue, rssi: x.rssi)
+                let beacon = Beacon(major: x.major.integerValue, minor: x.minor.integerValue, rssi: x.rssi, mv: mapView)
                 beaconDict[beacon.key()] = beacon
                 print ("Beacon {\(beacon.Major), \(beacon.Minor)} added to beaconDict")
                 print ("beaconDict contains " + String(beaconDict.count) + " beacons")
@@ -83,4 +83,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
 // MARK: - Map View delegate
 
 extension ViewController: MKMapViewDelegate {
+    
+    func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
+    if overlay is MKPolyline {
+    let lineView = MKPolylineRenderer(overlay: overlay)
+    lineView.strokeColor = UIColor.greenColor()
+    
+    return lineView
+    }
+    return MKPolylineRenderer()
+    }
 }

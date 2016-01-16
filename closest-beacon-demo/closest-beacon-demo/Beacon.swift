@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import CoreLocation
+import MapKit
 
 class Beacon : CustomStringConvertible {
     var description: String {
@@ -19,11 +20,14 @@ class Beacon : CustomStringConvertible {
     var RSSI = Int()
     
     var ride: Ride?
+    
+    private unowned var mapView: MKMapView
 
-    init(major: Int, minor: Int, rssi: Int) {
+    init(major: Int, minor: Int, rssi: Int, mv: MKMapView) {
         Major = major
         Minor = minor
         RSSI = Int.min
+        mapView = mv
         print ("Created beacon: \(self)")
         update(rssi)
     }
@@ -45,7 +49,7 @@ class Beacon : CustomStringConvertible {
         
         if (ride == nil) {
             if (RSSI > -50) {
-                self.ride = Ride(b: self)
+                self.ride = Ride(b: self, mv: mapView)
                 self.ride!.startRide()
             }
         } else {
