@@ -12,9 +12,8 @@ import MapKit
 
 class Ride: NSObject, CLLocationManagerDelegate {
     let locationManager = CLLocationManager()
-    var latitude = String()
-    var longitude = String()
-    var rideCoordinates: [CLLocationCoordinate2D] = []    
+    var rideCoordinates: [CLLocationCoordinate2D] = []
+    var ridePoint: RidePoint?
     private unowned var beacon: Beacon
     private unowned var mapView: MKMapView
     
@@ -34,24 +33,14 @@ class Ride: NSObject, CLLocationManagerDelegate {
     }
     
     func endRide() {
-        print (latitude)
-        print (longitude)
         print ("Your ride has ended :(")
     }
-
+    
     // Need to figure out how to get this MKPolyline in the ViewController somehow
     func addRide() {
         let coordinateCount = rideCoordinates.count
         let myPolyline = MKPolyline(coordinates: &rideCoordinates, count: coordinateCount)
         mapView.addOverlay(myPolyline)
-    }
-    
-    // zooms in to user's current location and moves the map to keep user's location centered accordingly
-    func trackUserOnMap() {
-        let spanX = 0.007
-        let spanY = 0.007
-        let newRegion = MKCoordinateRegion(center: mapView.userLocation.coordinate, span: MKCoordinateSpanMake(spanX, spanY))
-        mapView.setRegion(newRegion, animated: true)
     }
     
     // update location of user based on location services
@@ -68,14 +57,20 @@ class Ride: NSObject, CLLocationManagerDelegate {
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let latestLocation = locations.last! as CLLocation
-            latitude = String(format: "%.4f",
-                latestLocation.coordinate.latitude)
-            longitude = String(format: "%.4f",
-                latestLocation.coordinate.longitude)
+        let latitude = latestLocation.coordinate.latitude
+        let longitude = latestLocation.coordinate.longitude
+        let altitude = latestLocation.altitude
+        let horizontalAccuracy = latestLocation.horizontalAccuracy
+        let verticalAccuracy = latestLocation.verticalAccuracy
+        let timestamp = latestLocation.timestamp
         let latestCoordinate = CLLocationCoordinate2D(latitude: latestLocation.coordinate.latitude, longitude: latestLocation.coordinate.longitude)
+        self.ridePoint = RidePoint(c: latestCoordinate, a: altitude, h: horizontalAccuracy, v: verticalAccuracy, t: timestamp)
+        let region = MKCoordinateRegion(center: latestCoordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+        mapView.setRegion(region, animated: true)
         rideCoordinates.append(latestCoordinate)
         addRide()
-        trackUserOnMap()
         print (rideCoordinates)
+        print (latitude)
+        print (longitude)
     }
 }
