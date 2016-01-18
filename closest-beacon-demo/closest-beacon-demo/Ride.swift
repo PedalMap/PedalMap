@@ -33,10 +33,15 @@ class Ride: NSObject, CLLocationManagerDelegate {
     }
     
     func endRide() {
+        locationManager.stopUpdatingLocation()
+        if #available(iOS 9.0, *) {
+            locationManager.allowsBackgroundLocationUpdates = false
+        } else {
+            // Fallback on earlier versions
+        }
         print ("Your ride has ended :(")
     }
     
-    // Need to figure out how to get this MKPolyline in the ViewController somehow
     func addRide() {
         let coordinateCount = rideCoordinates.count
         let myPolyline = MKPolyline(coordinates: &rideCoordinates, count: coordinateCount)
@@ -46,10 +51,17 @@ class Ride: NSObject, CLLocationManagerDelegate {
     // update location of user based on location services
     
     func updateLocation() {
-        if CLLocationManager.locationServicesEnabled() {
+        if CLLocationManager.authorizationStatus() == CLAuthorizationStatus.AuthorizedAlways {
             locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-            locationManager.distanceFilter = 10
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager.distanceFilter = 3
+            locationManager.pausesLocationUpdatesAutomatically = true
+            locationManager.activityType = CLActivityType.Fitness
+            if #available(iOS 9.0, *) {
+                locationManager.allowsBackgroundLocationUpdates = true
+            } else {
+                // Fallback on earlier versions
+            }
             locationManager.startUpdatingLocation()
             print ("updated location!")
         }
@@ -69,7 +81,8 @@ class Ride: NSObject, CLLocationManagerDelegate {
         mapView.setRegion(region, animated: true)
         rideCoordinates.append(latestCoordinate)
         addRide()
-        print (rideCoordinates)
+        //print (self.ridePoint!)
+        print (rideCoordinates.count)
         print (latitude)
         print (longitude)
     }
