@@ -10,11 +10,11 @@ import Foundation
 import MapKit
 
 struct RidePoint {
-    private var coordinate: CLLocationCoordinate2D
-    private var altitude: CLLocationDistance
-    private var horizontalAccuracy: CLLocationAccuracy
-    private var verticalAccuracy: CLLocationAccuracy
-    private var timestamp: NSDate
+    var coordinate: CLLocationCoordinate2D
+    var altitude: CLLocationDistance
+    var horizontalAccuracy: CLLocationAccuracy
+    var verticalAccuracy: CLLocationAccuracy
+    var timestamp: NSDate
     
     init(c: CLLocationCoordinate2D, a: CLLocationDistance, h: CLLocationAccuracy, v: CLLocationAccuracy, t: NSDate) {
         coordinate = c

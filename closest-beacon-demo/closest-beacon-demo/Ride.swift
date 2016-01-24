@@ -12,8 +12,7 @@ import MapKit
 
 class Ride: NSObject, CLLocationManagerDelegate {
     let locationManager = CLLocationManager()
-    var rideCoordinates: [CLLocationCoordinate2D] = []
-    var ridePoint: RidePoint?
+    var ridePoints: [RidePoint] = []
     private unowned var beacon: Beacon
     private unowned var mapView: MKMapView
     
@@ -42,10 +41,21 @@ class Ride: NSObject, CLLocationManagerDelegate {
         print ("Your ride has ended :(")
     }
     
+    func getCoordinates(points: [RidePoint]) -> [CLLocationCoordinate2D] {
+        var rideCoordinates: [CLLocationCoordinate2D] = []
+        for x in points {
+            rideCoordinates.append(x.coordinate)
+        }
+        return rideCoordinates
+    }
+    
     func addRide() {
-        let coordinateCount = rideCoordinates.count
-        let myPolyline = MKPolyline(coordinates: &rideCoordinates, count: coordinateCount)
+        let ridePointsCount = ridePoints.count
+        var coords = getCoordinates(ridePoints)
+        let myPolyline = MKPolyline(coordinates: &coords, count: ridePointsCount)
         mapView.addOverlay(myPolyline)
+        print (ridePointsCount)
+        print (coords)
     }
     
     // update location of user based on location services
@@ -69,21 +79,14 @@ class Ride: NSObject, CLLocationManagerDelegate {
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let latestLocation = locations.last! as CLLocation
-        let latitude = latestLocation.coordinate.latitude
-        let longitude = latestLocation.coordinate.longitude
         let altitude = latestLocation.altitude
         let horizontalAccuracy = latestLocation.horizontalAccuracy
         let verticalAccuracy = latestLocation.verticalAccuracy
         let timestamp = latestLocation.timestamp
         let latestCoordinate = CLLocationCoordinate2D(latitude: latestLocation.coordinate.latitude, longitude: latestLocation.coordinate.longitude)
-        self.ridePoint = RidePoint(c: latestCoordinate, a: altitude, h: horizontalAccuracy, v: verticalAccuracy, t: timestamp)
+        self.ridePoints.append(RidePoint(c: latestCoordinate, a: altitude, h: horizontalAccuracy, v: verticalAccuracy, t: timestamp))
         let region = MKCoordinateRegion(center: latestCoordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
         mapView.setRegion(region, animated: true)
-        rideCoordinates.append(latestCoordinate)
         addRide()
-        //print (self.ridePoint!)
-        print (rideCoordinates.count)
-        print (latitude)
-        print (longitude)
     }
 }
