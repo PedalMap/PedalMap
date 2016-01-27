@@ -41,6 +41,7 @@ class Ride: NSObject, CLLocationManagerDelegate {
         print ("Your ride has ended :(")
     }
     
+    // returns an array of CLLocationCoordinates for the ride that MKPolyline reads
     func getCoordinates(points: [RidePoint]) -> [CLLocationCoordinate2D] {
         var rideCoordinates: [CLLocationCoordinate2D] = []
         for x in points {
@@ -64,7 +65,7 @@ class Ride: NSObject, CLLocationManagerDelegate {
         if CLLocationManager.authorizationStatus() == CLAuthorizationStatus.AuthorizedAlways {
             locationManager.delegate = self
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
-            locationManager.distanceFilter = 3
+            locationManager.distanceFilter = 10.0
             locationManager.pausesLocationUpdatesAutomatically = true
             locationManager.activityType = CLActivityType.Fitness
             if #available(iOS 9.0, *) {
@@ -77,16 +78,23 @@ class Ride: NSObject, CLLocationManagerDelegate {
         }
     }
     
+    
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let latestLocation = locations.last! as CLLocation
         let altitude = latestLocation.altitude
         let horizontalAccuracy = latestLocation.horizontalAccuracy
         let verticalAccuracy = latestLocation.verticalAccuracy
         let timestamp = latestLocation.timestamp
+        let speed = latestLocation.speed
+        let direction = latestLocation.course
         let latestCoordinate = CLLocationCoordinate2D(latitude: latestLocation.coordinate.latitude, longitude: latestLocation.coordinate.longitude)
-        self.ridePoints.append(RidePoint(c: latestCoordinate, a: altitude, h: horizontalAccuracy, v: verticalAccuracy, t: timestamp))
+        
+        // add new point to ridePoint array and mapview if horizontal accuracy < 20 meters
+        if horizontalAccuracy < 20 {
+        self.ridePoints.append(RidePoint(c: latestCoordinate, a: altitude, h: horizontalAccuracy, v: verticalAccuracy, t: timestamp, s: speed, d: direction))
         let region = MKCoordinateRegion(center: latestCoordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-        mapView.setRegion(region, animated: true)
+        self.mapView.setRegion(region, animated: true)
         addRide()
+        }
     }
 }

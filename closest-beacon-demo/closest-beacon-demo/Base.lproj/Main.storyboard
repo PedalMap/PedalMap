@@ -17,7 +17,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n7P-I5-Hyk">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n7P-I5-Hyk">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <connections>
                                     <outlet property="delegate" destination="vXZ-lx-hvc" id="UcT-VY-gxa"/>
@@ -25,6 +25,12 @@
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="n7P-I5-Hyk" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="Ltg-5p-CqE"/>
+                            <constraint firstAttribute="trailing" secondItem="n7P-I5-Hyk" secondAttribute="trailing" id="h0Q-Py-gdd"/>
+                            <constraint firstItem="n7P-I5-Hyk" firstAttribute="bottom" secondItem="2fi-mo-0CV" secondAttribute="top" id="hMh-io-bY1"/>
+                            <constraint firstItem="n7P-I5-Hyk" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="rPO-eD-YC5"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="mapView" destination="n7P-I5-Hyk" id="2MR-9K-M5o"/>

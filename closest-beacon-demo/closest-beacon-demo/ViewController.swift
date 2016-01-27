@@ -83,14 +83,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
 // MARK: - Map View delegate
 
 extension ViewController: MKMapViewDelegate {
-    
+
     func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
     if overlay is MKPolyline {
     let lineView = MKPolylineRenderer(overlay: overlay)
-    lineView.strokeColor = UIColor.greenColor()
-    
+    lineView.strokeColor = UIColor.redColor()
+    lineView.lineWidth = 3
+        
     return lineView
     }
     return MKPolylineRenderer()
     }
 }
+
