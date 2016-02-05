@@ -10,6 +10,7 @@ import Foundation
 import MapKit
 
 struct RidePoint {
+    var location: CLLocation
     var coordinate: CLLocationCoordinate2D
     var altitude: CLLocationDistance
     var horizontalAccuracy: CLLocationAccuracy
@@ -18,7 +19,8 @@ struct RidePoint {
     var speed: CLLocationSpeed
     var direction: CLLocationDirection
     
-    init(c: CLLocationCoordinate2D, a: CLLocationDistance, h: CLLocationAccuracy, v: CLLocationAccuracy, t: NSDate, s: CLLocationSpeed, d: CLLocationDirection) {
+    init(l: CLLocation, c: CLLocationCoordinate2D, a: CLLocationDistance, h: CLLocationAccuracy, v: CLLocationAccuracy, t: NSDate, s: CLLocationSpeed, d: CLLocationDirection) {
+        location = l
         coordinate = c
         altitude = a
         horizontalAccuracy = h

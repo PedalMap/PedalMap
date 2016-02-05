@@ -49,6 +49,23 @@ class Ride: NSObject, CLLocationManagerDelegate {
         }
         return rideCoordinates
     }
+
+    func distanceTraveled(points: [RidePoint]) -> CLLocationDistance {
+        var distance = 0.0
+        var rideLocations: [CLLocation] = []
+        
+        // create an array of the ride's CLLocations points
+        for x in points {
+            rideLocations.append(x.location)
+    }
+        
+        // calculate distance between adjacent pairs of the ride's CLLocation points in the CLLocation array
+        var index: Int
+        for index = 0; index < rideLocations.count; ++index {
+            distance += rideLocations[index].distanceFromLocation(rideLocations[index + 1])
+        }
+        return distance
+    }
     
     func addRide() {
         let ridePointsCount = ridePoints.count
@@ -88,13 +105,14 @@ class Ride: NSObject, CLLocationManagerDelegate {
         let speed = latestLocation.speed
         let direction = latestLocation.course
         let latestCoordinate = CLLocationCoordinate2D(latitude: latestLocation.coordinate.latitude, longitude: latestLocation.coordinate.longitude)
-        
-        // add new point to ridePoint array and mapview if horizontal accuracy < 20 meters
-        if horizontalAccuracy < 20 {
-        self.ridePoints.append(RidePoint(c: latestCoordinate, a: altitude, h: horizontalAccuracy, v: verticalAccuracy, t: timestamp, s: speed, d: direction))
+        print (horizontalAccuracy)
+        // add new point to ridePoint array and mapview if horizontal accuracy < 100 meters (ideally lower this for production)
+        if horizontalAccuracy < 100 {
+            self.ridePoints.append(RidePoint(l: latestLocation, c: latestCoordinate, a: altitude, h: horizontalAccuracy, v: verticalAccuracy, t: timestamp, s: speed, d: direction))
         let region = MKCoordinateRegion(center: latestCoordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
         self.mapView.setRegion(region, animated: true)
         addRide()
+        distanceTraveled((ridePoints))
         }
     }
 }
