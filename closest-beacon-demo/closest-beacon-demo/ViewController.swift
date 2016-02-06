@@ -10,8 +10,15 @@ import UIKit
 import CoreLocation
 import MapKit
 
-class ViewController: UIViewController, CLLocationManagerDelegate {
+class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDelegate {
     @IBOutlet weak var mapView: MKMapView!
+    
+    // labels for data on the map
+    @IBOutlet weak var timeLabel: UILabel!
+    @IBOutlet weak var speedLabel: UILabel!
+    @IBOutlet weak var directionLabel: UILabel!
+    @IBOutlet weak var distanceLabel: UILabel!
+        
     let locationManager = CLLocationManager()
     let region = CLBeaconRegion(proximityUUID:
         NSUUID(UUIDString: "11231989-1989-1989-1989-112319891989")!, identifier: "Bicycle")
@@ -43,6 +50,21 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         return nil
     }
     
+    func updatedPolyLine(line: MKPolyline) {
+        mapView.addOverlay(line)
+    }
+    
+    func setRegion(region: MKCoordinateRegion, animated: Bool) {
+        mapView.setRegion(region, animated: true)
+    }
+    
+    func updatedRideStats(rideTime: NSDate, speed: CLLocationSpeed, direction: CLLocationDirection, distance: CLLocationDistance) {
+        timeLabel.text = String(rideTime)
+        speedLabel.text = String(speed)
+        directionLabel.text = String(direction)
+        distanceLabel.text = String(distance)
+    }
+
     func locationManager(manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], inRegion region: CLBeaconRegion) {
         let knownBeacons = beacons.filter{ $0.proximity != CLProximity.Unknown }
         // NOTE: This assumes that closest beacon is first in the array. Not fit for production
@@ -52,7 +74,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             if let beacon = beaconInDict(beaconDict, major: x.major.integerValue, minor: x.minor.integerValue) {
                 beacon.update(x.rssi)
             } else {
-                let beacon = Beacon(major: x.major.integerValue, minor: x.minor.integerValue, rssi: x.rssi, mv: mapView)
+                let beacon = Beacon(major: x.major.integerValue, minor: x.minor.integerValue, rssi: x.rssi, red: self)
                 beaconDict[beacon.key()] = beacon
                 print ("Beacon {\(beacon.Major), \(beacon.Minor)} added to beaconDict")
                 print ("beaconDict contains " + String(beaconDict.count) + " beacons")

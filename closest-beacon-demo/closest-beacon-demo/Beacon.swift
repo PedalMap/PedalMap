@@ -21,13 +21,13 @@ class Beacon : CustomStringConvertible {
     
     var ride: Ride?
     
-    private unowned var mapView: MKMapView
+    private unowned var rideEventDelegate: RideEventDelegate
 
-    init(major: Int, minor: Int, rssi: Int, mv: MKMapView) {
+    init(major: Int, minor: Int, rssi: Int, red: RideEventDelegate) {
         Major = major
         Minor = minor
         RSSI = Int.min
-        mapView = mv
+        rideEventDelegate = red
         print ("Created beacon: \(self)")
         update(rssi)
     }
@@ -49,7 +49,7 @@ class Beacon : CustomStringConvertible {
         
         if (ride == nil) {
             if (RSSI > -50) {
-                self.ride = Ride(b: self, mv: mapView)
+                self.ride = Ride(b: self, red: rideEventDelegate)
                 self.ride!.startRide()
             }
         } else {

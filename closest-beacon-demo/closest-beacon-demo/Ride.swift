@@ -10,15 +10,21 @@ import Foundation
 import CoreLocation
 import MapKit
 
+protocol RideEventDelegate: class {
+    func updatedPolyLine(line: MKPolyline)
+    func setRegion(region: MKCoordinateRegion, animated: Bool)
+    func updatedRideStats(rideTime: NSDate, speed: CLLocationSpeed, direction: CLLocationDirection, distance: CLLocationDistance)
+}
+
 class Ride: NSObject, CLLocationManagerDelegate {
     let locationManager = CLLocationManager()
     var ridePoints: [RidePoint] = []
     private unowned var beacon: Beacon
-    private unowned var mapView: MKMapView
+    private unowned var rideEventDelegate: RideEventDelegate
     
-    init(b: Beacon, mv: MKMapView) {
+    init(b: Beacon, red: RideEventDelegate) {
         beacon = b
-        mapView = mv
+        rideEventDelegate = red
         print ("Ride constructed for Beacon {\(beacon.Major), \(beacon.Minor)}")
     }
     
@@ -68,11 +74,11 @@ class Ride: NSObject, CLLocationManagerDelegate {
         return distance
     }
     
-    func addRide() {
+    func rideEvent() {
         let ridePointsCount = ridePoints.count
         var coords = getCoordinates(ridePoints)
         let myPolyline = MKPolyline(coordinates: &coords, count: ridePointsCount)
-        mapView.addOverlay(myPolyline)
+        rideEventDelegate.updatedPolyLine(myPolyline)
         //print (ridePointsCount)
         //print (coords)
     }
@@ -110,8 +116,9 @@ class Ride: NSObject, CLLocationManagerDelegate {
         if horizontalAccuracy < 100 {
             self.ridePoints.append(RidePoint(l: latestLocation, c: latestCoordinate, a: altitude, h: horizontalAccuracy, v: verticalAccuracy, t: timestamp, s: speed, d: direction))
         let region = MKCoordinateRegion(center: latestCoordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-        self.mapView.setRegion(region, animated: true)
-        addRide()
+        rideEventDelegate.setRegion(region, animated: true)
+            rideEventDelegate.updatedRideStats(timestamp, speed: speed, direction: direction, distance: distanceTraveled(ridePoints))
+        rideEvent()
         print (distanceTraveled((ridePoints)))
         }
     }
