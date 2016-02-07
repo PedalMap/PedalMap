@@ -59,10 +59,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
     }
     
     func updatedRideStats(rideTime: NSDate, speed: CLLocationSpeed, direction: CLLocationDirection, distance: CLLocationDistance) {
-        timeLabel.text = String(rideTime)
-        speedLabel.text = String(speed)
-        directionLabel.text = String(direction)
-        distanceLabel.text = String(distance)
+        timeLabel.text = String(format: "%.4f", rideTime)
+        speedLabel.text = String(format: "%.4f", speed)
+        directionLabel.text = String(format: "%.4f", direction)
+        distanceLabel.text = String(format: "%.4f", distance)
     }
 
     func locationManager(manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], inRegion region: CLBeaconRegion) {
