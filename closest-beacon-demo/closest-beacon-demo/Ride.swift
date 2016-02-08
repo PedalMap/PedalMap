@@ -13,12 +13,13 @@ import MapKit
 protocol RideEventDelegate: class {
     func updatedPolyLine(line: MKPolyline)
     func setRegion(region: MKCoordinateRegion, animated: Bool)
-    func updatedRideStats(rideTime: NSDate, speed: CLLocationSpeed, direction: CLLocationDirection, distance: CLLocationDistance)
+    func updatedRideStats(speed: CLLocationSpeed, direction: CLLocationDirection, distance: CLLocationDistance)
 }
 
 class Ride: NSObject, CLLocationManagerDelegate {
     let locationManager = CLLocationManager()
     var ridePoints: [RidePoint] = []
+    let startTime = NSDate()
     private unowned var beacon: Beacon
     private unowned var rideEventDelegate: RideEventDelegate
     
@@ -117,9 +118,8 @@ class Ride: NSObject, CLLocationManagerDelegate {
             self.ridePoints.append(RidePoint(l: latestLocation, c: latestCoordinate, a: altitude, h: horizontalAccuracy, v: verticalAccuracy, t: timestamp, s: speed, d: direction))
         let region = MKCoordinateRegion(center: latestCoordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
         rideEventDelegate.setRegion(region, animated: true)
-            rideEventDelegate.updatedRideStats(timestamp, speed: speed, direction: direction, distance: distanceTraveled(ridePoints))
+            rideEventDelegate.updatedRideStats(speed, direction: direction, distance: distanceTraveled(ridePoints))
         rideEvent()
-        print (distanceTraveled((ridePoints)))
         }
     }
 }

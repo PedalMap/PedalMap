@@ -51,7 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 extension AppDelegate: CLLocationManagerDelegate {
     
     func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        if let beaconRegion = region as? CLBeaconRegion {
+        if let _ = region as? CLBeaconRegion {
             let notification = UILocalNotification()
             notification.alertBody = "Welcome to the Pedalmap Region!"
             notification.soundName = "Default"
@@ -60,7 +60,7 @@ extension AppDelegate: CLLocationManagerDelegate {
     }
     
     func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
-        if let beaconRegion = region as? CLBeaconRegion {
+        if let _ = region as? CLBeaconRegion {
             let notification = UILocalNotification()
             notification.alertBody = "You have left the Pedalmap Region :("
             notification.soundName = "Default"

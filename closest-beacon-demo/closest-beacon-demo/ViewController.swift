@@ -23,6 +23,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
     let beaconRegion = CLBeaconRegion(proximityUUID:
         NSUUID(UUIDString: "11231989-1989-1989-1989-112319891989")!, identifier: "Bicycle")
     var beaconDict = [Int: Beacon]()
+    var timer = NSTimer()
+    var counter = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +36,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
         }
         beaconRegion.notifyEntryStateOnDisplay = true
         startMonitoringRegion()
+        timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "timerAction", userInfo: nil, repeats: true)
+
     }
     
     func startMonitoringRegion() {
@@ -44,6 +48,22 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
     func stopMonitoringRegion() {
         locationManager.stopMonitoringForRegion(beaconRegion)
         locationManager.stopRangingBeaconsInRegion(beaconRegion)
+    }
+    
+    func checkForRide(dict: [Int: Beacon]) -> Bool {
+        for beacon in dict {
+            if beacon.1.ride != nil {
+                return true
+            }
+        }
+        return false
+    }
+
+    func timerAction() {
+        if checkForRide(beaconDict) == true {
+        timeLabel.text = String(counter)
+        counter++
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -108,8 +128,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
     }
     
     // adds data to label fields on mapview
-    func updatedRideStats(rideTime: NSDate, speed: CLLocationSpeed, direction: CLLocationDirection, distance: CLLocationDistance) {
-        timeLabel.text = String(format: "%.4f", rideTime)
+    func updatedRideStats(speed: CLLocationSpeed, direction: CLLocationDirection, distance: CLLocationDistance) {
         speedLabel.text = String(format: "%.4f", speed)
         directionLabel.text = String(format: "%.4f", direction)
         distanceLabel.text = String(format: "%.4f", distance)
