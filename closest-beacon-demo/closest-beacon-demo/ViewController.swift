@@ -20,7 +20,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
     @IBOutlet weak var distanceLabel: UILabel!
         
     let locationManager = CLLocationManager()
-    let region = CLBeaconRegion(proximityUUID:
+    let beaconRegion = CLBeaconRegion(proximityUUID:
         NSUUID(UUIDString: "11231989-1989-1989-1989-112319891989")!, identifier: "Bicycle")
     var beaconDict = [Int: Beacon]()
     
@@ -32,7 +32,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
         if (CLLocationManager.authorizationStatus() != CLAuthorizationStatus.AuthorizedAlways) {
             locationManager.requestAlwaysAuthorization()
         }
-        locationManager.startRangingBeaconsInRegion(region)
+        beaconRegion.notifyEntryStateOnDisplay = true
+        startMonitoringRegion()
+    }
+    
+    func startMonitoringRegion() {
+        locationManager.startMonitoringForRegion(beaconRegion)
+        locationManager.startRangingBeaconsInRegion(beaconRegion)
+    }
+    
+    func stopMonitoringRegion() {
+        locationManager.stopMonitoringForRegion(beaconRegion)
+        locationManager.stopRangingBeaconsInRegion(beaconRegion)
     }
     
     override func didReceiveMemoryWarning() {
@@ -48,21 +59,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
             }
         }
         return nil
-    }
-    
-    func updatedPolyLine(line: MKPolyline) {
-        mapView.addOverlay(line)
-    }
-    
-    func setRegion(region: MKCoordinateRegion, animated: Bool) {
-        mapView.setRegion(region, animated: true)
-    }
-    
-    func updatedRideStats(rideTime: NSDate, speed: CLLocationSpeed, direction: CLLocationDirection, distance: CLLocationDistance) {
-        timeLabel.text = String(format: "%.4f", rideTime)
-        speedLabel.text = String(format: "%.4f", speed)
-        directionLabel.text = String(format: "%.4f", direction)
-        distanceLabel.text = String(format: "%.4f", distance)
     }
 
     func locationManager(manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], inRegion region: CLBeaconRegion) {
@@ -100,6 +96,26 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
             }
         }
     }
+    
+    // addes coordinates to mapview
+    func updatedPolyLine(line: MKPolyline) {
+        mapView.addOverlay(line)
+    }
+    
+    // sets region for mapview
+    func setRegion(region: MKCoordinateRegion, animated: Bool) {
+        mapView.setRegion(region, animated: true)
+    }
+    
+    // adds data to label fields on mapview
+    func updatedRideStats(rideTime: NSDate, speed: CLLocationSpeed, direction: CLLocationDirection, distance: CLLocationDistance) {
+        timeLabel.text = String(format: "%.4f", rideTime)
+        speedLabel.text = String(format: "%.4f", speed)
+        directionLabel.text = String(format: "%.4f", direction)
+        distanceLabel.text = String(format: "%.4f", distance)
+    }
+    
+    
 }
 
 // MARK: - Map View delegate
