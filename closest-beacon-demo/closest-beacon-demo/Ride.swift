@@ -13,7 +13,7 @@ import MapKit
 protocol RideEventDelegate: class {
     func updatedPolyLine(line: MKPolyline)
     func setRegion(region: MKCoordinateRegion, animated: Bool)
-    func updatedRideStats(speed: CLLocationSpeed, direction: CLLocationDirection, distance: CLLocationDistance)
+    func updatedRideStats(speed: CLLocationSpeed, direction: CLLocationDirection, distance: CLLocationDistance, horizontalAccuracy: CLLocationAccuracy)
 }
 
 class Ride: NSObject, CLLocationManagerDelegate {
@@ -75,6 +75,11 @@ class Ride: NSObject, CLLocationManagerDelegate {
         return distance
     }
     
+    // TODO: Add this function and see if I can move ride counter here
+    func averageRideSpeed(distance: CLLocationDistance) {
+        
+    }
+    
     func rideEvent() {
         let ridePointsCount = ridePoints.count
         var coords = getCoordinates(ridePoints)
@@ -114,11 +119,11 @@ class Ride: NSObject, CLLocationManagerDelegate {
         let direction = latestLocation.course
         let latestCoordinate = CLLocationCoordinate2D(latitude: latestLocation.coordinate.latitude, longitude: latestLocation.coordinate.longitude)
         // add new point to ridePoint array and mapview if horizontal accuracy < 100 meters (ideally lower this for production)
-        if horizontalAccuracy < 100 {
+        if horizontalAccuracy <= 65 {
             self.ridePoints.append(RidePoint(l: latestLocation, c: latestCoordinate, a: altitude, h: horizontalAccuracy, v: verticalAccuracy, t: timestamp, s: speed, d: direction))
         let region = MKCoordinateRegion(center: latestCoordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
         rideEventDelegate.setRegion(region, animated: true)
-            rideEventDelegate.updatedRideStats(speed, direction: direction, distance: distanceTraveled(ridePoints))
+            rideEventDelegate.updatedRideStats(speed, direction: direction, distance: distanceTraveled(ridePoints), horizontalAccuracy: horizontalAccuracy)
         rideEvent()
         }
     }
