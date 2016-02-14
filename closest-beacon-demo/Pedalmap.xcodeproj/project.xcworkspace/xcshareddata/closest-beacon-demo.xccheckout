@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>403A5292-AB48-4A40-91C7-B27499AA1282</string>
+	<key>IDESourceControlProjectName</key>
+	<string>closest-beacon-demo</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>5E5C19EA263AE4DDF2FEFAE32F180E8C4AD388DB</key>
+		<string>https://github.com/zbrowne/datasciencecoursera.git</string>
+		<key>7DF6A6D9B300B6316F3DCC96E8ADE84FA711C43F</key>
+		<string>github.com:PedalMap/PedalMap.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>closest-beacon-demo/closest-beacon-demo.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>5E5C19EA263AE4DDF2FEFAE32F180E8C4AD388DB</key>
+		<string>../../../..</string>
+		<key>7DF6A6D9B300B6316F3DCC96E8ADE84FA711C43F</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:PedalMap/PedalMap.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>7DF6A6D9B300B6316F3DCC96E8ADE84FA711C43F</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>5E5C19EA263AE4DDF2FEFAE32F180E8C4AD388DB</string>
+			<key>IDESourceControlWCCName</key>
+			<string></string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>7DF6A6D9B300B6316F3DCC96E8ADE84FA711C43F</string>
+			<key>IDESourceControlWCCName</key>
+			<string>PedalMap</string>
+		</dict>
+	</array>
+</dict>
+</plist>
