@@ -47,13 +47,15 @@ class Beacon : CustomStringConvertible {
         if (rssi == RSSI) { return }
         RSSI = rssi
         
+        // determine proximity to beacon for starting and ending rides
+        
         if (ride == nil) {
-            if (RSSI > -50) {
+            if (RSSI > -70) {
                 self.ride = Ride(b: self, red: rideEventDelegate)
                 self.ride!.startRide()
             }
         } else {
-            if (RSSI < -80) {
+            if (RSSI < -110) {
                 self.ride!.endRide()
                 self.ride = nil
             }

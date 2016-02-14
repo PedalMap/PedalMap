@@ -68,7 +68,7 @@
 			isa = PBXGroup;
 			children = (
 				0047D6B41A86E2D800C76A84 /* closest-beacon-demo */,
-				0047D6CA1A86E2D800C76A84 /* closest-beacon-demoTests */,
+				0047D6CA1A86E2D800C76A84 /* closest-beacon-demo */,
 				0047D6B31A86E2D800C76A84 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -107,12 +107,13 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		0047D6CA1A86E2D800C76A84 /* closest-beacon-demoTests */ = {
+		0047D6CA1A86E2D800C76A84 /* closest-beacon-demo */ = {
 			isa = PBXGroup;
 			children = (
 				0047D6CD1A86E2D800C76A84 /* closest_beacon_demoTests.swift */,
 				0047D6CB1A86E2D800C76A84 /* Supporting Files */,
 			);
+			name = "closest-beacon-demo";
 			path = "closest-beacon-demoTests";
 			sourceTree = "<group>";
 		};
