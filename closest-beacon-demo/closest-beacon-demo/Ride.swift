@@ -108,7 +108,6 @@ class Ride: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let latestLocation = locations.last! as CLLocation
         let altitude = latestLocation.altitude

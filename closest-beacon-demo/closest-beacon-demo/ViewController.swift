@@ -37,6 +37,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
         }
         beaconRegion.notifyEntryStateOnDisplay = true
         startMonitoringRegion()
+        
+        // sets timer for when a ride starts
         timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "timerAction", userInfo: nil, repeats: true)
 
     }
@@ -51,19 +53,24 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
         locationManager.stopRangingBeaconsInRegion(beaconRegion)
     }
     
-    func checkForRide(dict: [Int: Beacon]) -> Bool {
+    // checks whether a beacon has a ride in progress
+    func checkForRide(dict: [Int: Beacon]) -> Beacon? {
         for beacon in dict {
             if beacon.1.ride != nil {
-                return true
+                return beacon.1
             }
         }
-        return false
+        return nil
     }
 
+    // timer helper function
     func timerAction() {
-        if checkForRide(beaconDict) == true {
-        timeLabel.text = String(counter)
-        counter++
+        if let rideBeacon = checkForRide(beaconDict) {
+            let startTime = rideBeacon.ride!.startTime
+            print (startTime)
+            let rideTime = -1 * startTime.timeIntervalSinceNow
+            timeLabel.text = NSDateComponentsFormatter().stringFromTimeInterval(rideTime)
+            print (rideTime)
         }
     }
     
