@@ -19,6 +19,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
     @IBOutlet weak var directionLabel: UILabel!
     @IBOutlet weak var distanceLabel: UILabel!
     @IBOutlet weak var horizontalAccuracyLabel: UILabel!
+    @IBOutlet weak var avgSpeedLabel: UILabel!
         
     let locationManager = CLLocationManager()
     let beaconRegion = CLBeaconRegion(proximityUUID:
@@ -135,12 +136,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
         mapView.setRegion(region, animated: true)
     }
     
+    // removes existing polylines from map
+    func removePolyline() {
+        mapView.removeOverlays(mapView.overlays)
+    }
+    
     // adds data to label fields on mapview
-    func updatedRideStats(speed: CLLocationSpeed, direction: CLLocationDirection, distance: CLLocationDistance, horizontalAccuracy: CLLocationAccuracy) {
-        speedLabel.text = String(format: "%.f", speed * 2.236936284) // convert m/s to mph
+    func updatedRideStats(speed: CLLocationSpeed, direction: CLLocationDirection, distance: CLLocationDistance, horizontalAccuracy: CLLocationAccuracy, avgSpeed: CLLocationSpeed) {
+        speedLabel.text = String(format: "%.1f", speed * 2.236936284) // convert m/s to mph
         directionLabel.text = String(format: "%.4f", direction)
         distanceLabel.text = String(format: "%.2f", distance / 1609.34)
         horizontalAccuracyLabel.text = String(format: "%.2f", horizontalAccuracy)
+        avgSpeedLabel.text = String(format: "%.1f", avgSpeed * 2.236936284) // convert m/s to mph
     }
     
     

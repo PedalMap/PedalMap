@@ -13,7 +13,8 @@ import MapKit
 protocol RideEventDelegate: class {
     func updatedPolyLine(line: MKPolyline)
     func setRegion(region: MKCoordinateRegion, animated: Bool)
-    func updatedRideStats(speed: CLLocationSpeed, direction: CLLocationDirection, distance: CLLocationDistance, horizontalAccuracy: CLLocationAccuracy)
+    func removePolyline()
+    func updatedRideStats(speed: CLLocationSpeed, direction: CLLocationDirection, distance: CLLocationDistance, horizontalAccuracy: CLLocationAccuracy, avgSpeed: CLLocationSpeed)
 }
 
 class Ride: NSObject, CLLocationManagerDelegate {
@@ -35,6 +36,7 @@ class Ride: NSObject, CLLocationManagerDelegate {
     
     func startRide() {
         print ("Your ride has started!")
+        rideEventDelegate.removePolyline()
         updateLocation()
     }
     
@@ -75,9 +77,32 @@ class Ride: NSObject, CLLocationManagerDelegate {
         return distance
     }
     
-    // TODO: Add this function and see if I can move ride counter here
-    func averageRideSpeed(distance: CLLocationDistance) {
+    // returns average ride speed, which is sum of total ride speed points divided by total number ride points
+    func avgSpeed(points: [RidePoint]) -> CLLocationSpeed {
+        var rideSpeeds: [CLLocationSpeed] = []
+        var speedSum: CLLocationSpeed = 0
+        let numRideSpeeds: Double = Double(rideSpeeds.count)
+        var avgSpeed: CLLocationSpeed
         
+        
+        // create an array of the ride's CLLocationSpeed points
+        
+        for x in points {
+            rideSpeeds.append(x.speed)
+        }
+        
+        // sum array of ride's CLLocationSpeed points if they're greater than zero
+        if (numRideSpeeds == 0) {
+            avgSpeed = 0
+        }
+        
+        else {
+        for var index = 0; index < rideSpeeds.count - 1; ++index {
+                speedSum += rideSpeeds[index]
+            }
+            avgSpeed = speedSum / numRideSpeeds
+        }
+        return avgSpeed
     }
     
     func rideEvent() {
@@ -85,8 +110,6 @@ class Ride: NSObject, CLLocationManagerDelegate {
         var coords = getCoordinates(ridePoints)
         let myPolyline = MKPolyline(coordinates: &coords, count: ridePointsCount)
         rideEventDelegate.updatedPolyLine(myPolyline)
-        //print (ridePointsCount)
-        //print (coords)
     }
     
     // update location of user based on location services
@@ -94,7 +117,7 @@ class Ride: NSObject, CLLocationManagerDelegate {
     func updateLocation() {
         if CLLocationManager.authorizationStatus() == CLAuthorizationStatus.AuthorizedAlways {
             locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
             locationManager.distanceFilter = 10.0
             locationManager.pausesLocationUpdatesAutomatically = true
             locationManager.activityType = CLActivityType.Fitness
@@ -122,7 +145,7 @@ class Ride: NSObject, CLLocationManagerDelegate {
             self.ridePoints.append(RidePoint(l: latestLocation, c: latestCoordinate, a: altitude, h: horizontalAccuracy, v: verticalAccuracy, t: timestamp, s: speed, d: direction))
         let region = MKCoordinateRegion(center: latestCoordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
         rideEventDelegate.setRegion(region, animated: true)
-            rideEventDelegate.updatedRideStats(speed, direction: direction, distance: distanceTraveled(ridePoints), horizontalAccuracy: horizontalAccuracy)
+            rideEventDelegate.updatedRideStats(speed, direction: direction, distance: distanceTraveled(ridePoints), horizontalAccuracy: horizontalAccuracy, avgSpeed: avgSpeed(ridePoints))
         rideEvent()
         }
     }
