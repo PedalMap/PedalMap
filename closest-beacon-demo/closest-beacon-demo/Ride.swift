@@ -58,7 +58,7 @@ class Ride: NSObject, CLLocationManagerDelegate {
         }
         return rideCoordinates
     }
-
+    
     func distanceTraveled(points: [RidePoint]) -> CLLocationDistance {
         var distance = 0.0
         var rideLocations: [CLLocation] = []
@@ -80,28 +80,19 @@ class Ride: NSObject, CLLocationManagerDelegate {
     // returns average ride speed, which is sum of total ride speed points divided by total number ride points
     func avgSpeed(points: [RidePoint]) -> CLLocationSpeed {
         var rideSpeeds: [CLLocationSpeed] = []
-        var speedSum: CLLocationSpeed = 0
-        let numRideSpeeds: Double = Double(rideSpeeds.count)
         var avgSpeed: CLLocationSpeed
         
-        
         // create an array of the ride's CLLocationSpeed points
-        
         for x in points {
             rideSpeeds.append(x.speed)
         }
         
-        // sum array of ride's CLLocationSpeed points if they're greater than zero
-        if (numRideSpeeds == 0) {
-            avgSpeed = 0
+        // if ride speeds exist, sum them and divide by total number of ride speeds
+        if (rideSpeeds.count > 0) {
+            let speedSum = rideSpeeds.reduce(0, combine: +)
+            avgSpeed = speedSum / Double(rideSpeeds.count)
         }
-        
-        else {
-        for var index = 0; index < rideSpeeds.count - 1; ++index {
-                speedSum += rideSpeeds[index]
-            }
-            avgSpeed = speedSum / numRideSpeeds
-        }
+        else {avgSpeed = 0}
         return avgSpeed
     }
     
@@ -140,13 +131,16 @@ class Ride: NSObject, CLLocationManagerDelegate {
         let speed = latestLocation.speed
         let direction = latestLocation.course
         let latestCoordinate = CLLocationCoordinate2D(latitude: latestLocation.coordinate.latitude, longitude: latestLocation.coordinate.longitude)
-        // add new point to ridePoint array and mapview if horizontal accuracy < 100 meters (ideally lower this for production)
-        if horizontalAccuracy <= 65 {
-            self.ridePoints.append(RidePoint(l: latestLocation, c: latestCoordinate, a: altitude, h: horizontalAccuracy, v: verticalAccuracy, t: timestamp, s: speed, d: direction))
+        
+        // update map region
         let region = MKCoordinateRegion(center: latestCoordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
         rideEventDelegate.setRegion(region, animated: true)
+        
+        // add new point to ridePoint array if horizontal accuracy < 65 meters and speed is non-negative number
+        if horizontalAccuracy < 65 && speed >= 0 {
+            self.ridePoints.append(RidePoint(l: latestLocation, c: latestCoordinate, a: altitude, h: horizontalAccuracy, v: verticalAccuracy, t: timestamp, s: speed, d: direction))
             rideEventDelegate.updatedRideStats(speed, direction: direction, distance: distanceTraveled(ridePoints), horizontalAccuracy: horizontalAccuracy, avgSpeed: avgSpeed(ridePoints))
-        rideEvent()
+            rideEvent()
         }
     }
 }

@@ -68,10 +68,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
     func timerAction() {
         if let rideBeacon = checkForRide(beaconDict) {
             let startTime = rideBeacon.ride!.startTime
-            print (startTime)
             let rideTime = -1 * startTime.timeIntervalSinceNow
             timeLabel.text = NSDateComponentsFormatter().stringFromTimeInterval(rideTime)
-            print (rideTime)
         }
     }
     
