@@ -35,9 +35,12 @@ class Ride: NSObject, CLLocationManagerDelegate {
     }
     
     func startRide() {
-        print ("Your ride has started!")
         rideEventDelegate.removePolyline()
         updateLocation()
+        let notification = UILocalNotification()
+        notification.alertBody = "Ride Started!"
+        notification.soundName = "Default"
+        UIApplication.sharedApplication().presentLocalNotificationNow(notification)
     }
     
     func endRide() {
@@ -47,7 +50,10 @@ class Ride: NSObject, CLLocationManagerDelegate {
         } else {
             // Fallback on earlier versions
         }
-        print ("Your ride has ended :(")
+        let notification = UILocalNotification()
+        notification.alertBody = "Ride Ended. NOOOOOOO :( :( :("
+        notification.soundName = "Default"
+        UIApplication.sharedApplication().presentLocalNotificationNow(notification)
     }
     
     // returns an array of CLLocationCoordinates for the ride that MKPolyline reads
@@ -138,7 +144,6 @@ class Ride: NSObject, CLLocationManagerDelegate {
                 // Fallback on earlier versions
             }
             locationManager.startUpdatingLocation()
-            print ("updated location!")
         }
     }
     

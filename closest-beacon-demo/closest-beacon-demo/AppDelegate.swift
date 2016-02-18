@@ -20,8 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         locationManager.delegate = self
-        let notificationType:UIUserNotificationType = UIUserNotificationType.Sound.union(UIUserNotificationType.Alert)
-        let notificationSettings = UIUserNotificationSettings(forTypes: notificationType, categories: nil)
+        let notificationSettings = UIUserNotificationSettings(forTypes: [.Sound, .Alert, .Badge], categories: nil)
         UIApplication.sharedApplication().registerUserNotificationSettings(notificationSettings)
         
         backgroundTask = UIBackgroundTaskInvalid
