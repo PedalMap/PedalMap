@@ -87,11 +87,17 @@ extension AppDelegate: CLLocationManagerDelegate {
         if backgroundTask != UIBackgroundTaskInvalid {
             return
         }
-        let application = UIApplication.sharedApplication()
-        backgroundTask = application.beginBackgroundTaskWithExpirationHandler {
-            application.endBackgroundTask(self.backgroundTask)
-            self.backgroundTask = UIBackgroundTaskInvalid
+        NSLog("attempting to extend background running time")
+        
+        backgroundTask = UIApplication.sharedApplication().beginBackgroundTaskWithExpirationHandler {
+            self.endBackgroundTask()
         }
+    }
+    
+    func endBackgroundTask() {
+        NSLog("Background task ended.")
+        UIApplication.sharedApplication().endBackgroundTask(backgroundTask)
+        backgroundTask = UIBackgroundTaskInvalid
     }
 }
 

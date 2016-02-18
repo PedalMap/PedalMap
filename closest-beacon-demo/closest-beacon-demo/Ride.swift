@@ -14,7 +14,7 @@ protocol RideEventDelegate: class {
     func updatedPolyLine(line: MKPolyline)
     func setRegion(region: MKCoordinateRegion, animated: Bool)
     func removePolyline()
-    func updatedRideStats(speed: CLLocationSpeed, direction: CLLocationDirection, distance: CLLocationDistance, horizontalAccuracy: CLLocationAccuracy, avgSpeed: CLLocationSpeed)
+    func updatedRideStats(speed: CLLocationSpeed, direction: CLLocationDirection, distance: CLLocationDistance, horizontalAccuracy: CLLocationAccuracy, avgSpeed: CLLocationSpeed, totalAltitude: CLLocationDistance, verticalAccuracy: CLLocationAccuracy)
 }
 
 class Ride: NSObject, CLLocationManagerDelegate {
@@ -96,6 +96,26 @@ class Ride: NSObject, CLLocationManagerDelegate {
         return avgSpeed
     }
     
+    func totalAltitude(points: [RidePoint]) -> CLLocationDistance {
+        var altitudes: [CLLocationDistance] = []
+        var totalAltitude: CLLocationDistance = 0.0
+
+        // create an array of the ride's altitude points
+        for x in points {
+            altitudes.append(x.altitude)
+        }
+        
+        // if altitude gained between two points, add it to total altitude
+        if altitudes.count > 1 {
+            for var index = 0; index < altitudes.count - 1; ++index {
+                if altitudes[index + 1] > altitudes[index] {
+                    totalAltitude += altitudes[index + 1] - altitudes[index]
+                }
+            }
+        }
+        return totalAltitude
+    }
+    
     func rideEvent() {
         let ridePointsCount = ridePoints.count
         var coords = getCoordinates(ridePoints)
@@ -139,7 +159,7 @@ class Ride: NSObject, CLLocationManagerDelegate {
         // add new point to ridePoint array if horizontal accuracy < 65 meters and speed is non-negative number
         if horizontalAccuracy < 65 && speed >= 0 {
             self.ridePoints.append(RidePoint(l: latestLocation, c: latestCoordinate, a: altitude, h: horizontalAccuracy, v: verticalAccuracy, t: timestamp, s: speed, d: direction))
-            rideEventDelegate.updatedRideStats(speed, direction: direction, distance: distanceTraveled(ridePoints), horizontalAccuracy: horizontalAccuracy, avgSpeed: avgSpeed(ridePoints))
+            rideEventDelegate.updatedRideStats(speed, direction: direction, distance: distanceTraveled(ridePoints), horizontalAccuracy: horizontalAccuracy, avgSpeed: avgSpeed(ridePoints), totalAltitude: totalAltitude(ridePoints), verticalAccuracy: verticalAccuracy)
             rideEvent()
         }
     }

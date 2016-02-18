@@ -20,6 +20,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
     @IBOutlet weak var distanceLabel: UILabel!
     @IBOutlet weak var horizontalAccuracyLabel: UILabel!
     @IBOutlet weak var avgSpeedLabel: UILabel!
+    @IBOutlet weak var totalAltitudeLabel: UILabel!
+    @IBOutlet weak var verticalAccuracyLabel: UILabel!
         
     let locationManager = CLLocationManager()
     let beaconRegion = CLBeaconRegion(proximityUUID:
@@ -99,8 +101,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
             } else {
                 let beacon = Beacon(major: x.major.integerValue, minor: x.minor.integerValue, rssi: x.rssi, red: self)
                 beaconDict[beacon.key()] = beacon
-                print ("Beacon {\(beacon.Major), \(beacon.Minor)} added to beaconDict")
-                print ("beaconDict contains " + String(beaconDict.count) + " beacons")
+                NSLog("Beacon {\(beacon.Major), \(beacon.Minor)} added to beaconDict")
+                NSLog("beaconDict contains " + String(beaconDict.count) + " beacons")
             }
         }
         // removes all beacons from the beaconDict that are in the beaconDict but not in range (part of knownBeacons array)
@@ -140,12 +142,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
     }
     
     // adds data to label fields on mapview
-    func updatedRideStats(speed: CLLocationSpeed, direction: CLLocationDirection, distance: CLLocationDistance, horizontalAccuracy: CLLocationAccuracy, avgSpeed: CLLocationSpeed) {
+    func updatedRideStats(speed: CLLocationSpeed, direction: CLLocationDirection, distance: CLLocationDistance, horizontalAccuracy: CLLocationAccuracy, avgSpeed: CLLocationSpeed, totalAltitude: CLLocationDistance, verticalAccuracy: CLLocationAccuracy) {
         speedLabel.text = String(format: "%.1f", speed * 2.236936284) // convert m/s to mph
         directionLabel.text = String(format: "%.4f", direction)
         distanceLabel.text = String(format: "%.2f", distance / 1609.34)
         horizontalAccuracyLabel.text = String(format: "%.2f", horizontalAccuracy)
         avgSpeedLabel.text = String(format: "%.1f", avgSpeed * 2.236936284) // convert m/s to mph
+        totalAltitudeLabel.text = String(format: "%.0f", totalAltitude)
+        verticalAccuracyLabel.text = String(format: "%.2f", verticalAccuracy)
     }
     
     
