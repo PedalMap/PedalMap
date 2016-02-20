@@ -8,23 +8,21 @@
 
 import UIKit
 import CoreLocation
+import MapKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     let locationManager = CLLocationManager()
-    var backgroundTask = UIBackgroundTaskIdentifier()
-    var inBackground = Bool()
+    // create unowned variable for ride
+    private weak var ride: Ride?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         locationManager.delegate = self
         let notificationSettings = UIUserNotificationSettings(forTypes: [.Sound, .Alert, .Badge], categories: nil)
         UIApplication.sharedApplication().registerUserNotificationSettings(notificationSettings)
-        
-        backgroundTask = UIBackgroundTaskInvalid
-        inBackground = true
         
         return true
     }
@@ -37,8 +35,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-        self.extendBackgroundRunnningTime()
-        inBackground = true
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
@@ -47,7 +43,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        inBackground = false
     }
 
     func applicationWillTerminate(application: UIApplication) {
@@ -76,27 +71,40 @@ extension AppDelegate: CLLocationManagerDelegate {
         }
     }
     
-    func locationManager(manager: CLLocationManager, didDetermineState state: CLRegionState, forRegion region: CLRegion) {
-        if (inBackground) {
-            self.extendBackgroundRunnningTime()
+    // customizable function for establishing location updates for both beacon ranging and ride states
+    func startUpdatingLocation(delegate: CLLocationManagerDelegate, accuracy: CLLocationAccuracy) {
+        if CLLocationManager.authorizationStatus() == CLAuthorizationStatus.AuthorizedAlways {
+            locationManager.delegate = delegate
+            locationManager.desiredAccuracy = accuracy
+            locationManager.distanceFilter = 10.0
+            locationManager.pausesLocationUpdatesAutomatically = true
+            locationManager.activityType = CLActivityType.Fitness
+            if #available(iOS 9.0, *) {
+                locationManager.allowsBackgroundLocationUpdates = true
+            } else {
+                // Fallback on earlier versions
+            }
+            locationManager.startUpdatingLocation()
         }
     }
     
-    func extendBackgroundRunnningTime() {
-        if backgroundTask != UIBackgroundTaskInvalid {
-            return
-        }
-        NSLog("attempting to extend background running time")
-        
-        backgroundTask = UIApplication.sharedApplication().beginBackgroundTaskWithExpirationHandler {
-            self.endBackgroundTask()
-        }
+    // call this function when a ride starts. Highest accuracy for good ride stats
+    func updateLocationForRide(ride: Ride) {
+        startUpdatingLocation(self, accuracy: kCLLocationAccuracyBestForNavigation)
+        self.ride = ride
     }
     
-    func endBackgroundTask() {
-        NSLog("Background task ended.")
-        UIApplication.sharedApplication().endBackgroundTask(backgroundTask)
-        backgroundTask = UIBackgroundTaskInvalid
+    // call this function when a ride ends but we want to keep ranging. Weakest location accuracy to conserve battery while ranging
+    func updateLocationForRanging(ride: Ride) {
+        startUpdatingLocation(self, accuracy: kCLLocationAccuracyThreeKilometers)
+        self.ride = nil
+    }
+    
+    //  check to see if ride variable exists, if it does pass array informatino abck to ride
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let r = ride {
+            r.getLocationInfo(locations)
+        }
     }
 }
 

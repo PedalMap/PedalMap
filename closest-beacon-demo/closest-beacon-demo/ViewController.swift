@@ -151,8 +151,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
         totalAltitudeLabel.text = String(format: "%.0f", totalAltitude)
         verticalAccuracyLabel.text = String(format: "%.2f", verticalAccuracy)
     }
-    
-    
 }
 
 // MARK: - Map View delegate

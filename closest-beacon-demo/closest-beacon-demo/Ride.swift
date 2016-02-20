@@ -36,7 +36,9 @@ class Ride: NSObject, CLLocationManagerDelegate {
     
     func startRide() {
         rideEventDelegate.removePolyline()
-        updateLocation()
+        // need to make this update to high accuracy
+        let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        delegate.updateLocationForRide(self)
         let notification = UILocalNotification()
         notification.alertBody = "Ride Started!"
         notification.soundName = "Default"
@@ -44,12 +46,9 @@ class Ride: NSObject, CLLocationManagerDelegate {
     }
     
     func endRide() {
-        locationManager.stopUpdatingLocation()
-        if #available(iOS 9.0, *) {
-            locationManager.allowsBackgroundLocationUpdates = false
-        } else {
-            // Fallback on earlier versions
-        }
+        // stop updating location with high frequency 
+        let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        delegate.updateLocationForRanging(self)
         let notification = UILocalNotification()
         notification.alertBody = "Ride Ended. NOOOOOOO :( :( :("
         notification.soundName = "Default"
@@ -128,26 +127,9 @@ class Ride: NSObject, CLLocationManagerDelegate {
         let myPolyline = MKPolyline(coordinates: &coords, count: ridePointsCount)
         rideEventDelegate.updatedPolyLine(myPolyline)
     }
-    
-    // update location of user based on location services
-    
-    func updateLocation() {
-        if CLLocationManager.authorizationStatus() == CLAuthorizationStatus.AuthorizedAlways {
-            locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-            locationManager.distanceFilter = 10.0
-            locationManager.pausesLocationUpdatesAutomatically = true
-            locationManager.activityType = CLActivityType.Fitness
-            if #available(iOS 9.0, *) {
-                locationManager.allowsBackgroundLocationUpdates = true
-            } else {
-                // Fallback on earlier versions
-            }
-            locationManager.startUpdatingLocation()
-        }
-    }
-    
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+
+    // pull in cllocation array from appdelegate, keep  everything else the same
+    func getLocationInfo(locations: [CLLocation]) {
         let latestLocation = locations.last! as CLLocation
         let altitude = latestLocation.altitude
         let horizontalAccuracy = latestLocation.horizontalAccuracy
