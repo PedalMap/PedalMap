@@ -11,6 +11,11 @@ import UIKit
 import CoreLocation
 import MapKit
 
+protocol BeaconDelegate: class {
+    func beaconEnteredRange(beacon: Beacon)
+    func beaconExitedRange(beacon: Beacon)
+}
+
 class Beacon : CustomStringConvertible {
     var description: String {
         return "Beacon {\(Major), \(Minor)}"
@@ -18,16 +23,18 @@ class Beacon : CustomStringConvertible {
     var Major = Int()
     var Minor = Int()
     var RSSI = Int()
+    var enterTriggerValue: Int = -55
+    var exitTriggerValue: Int = -90
     
     var ride: Ride?
     
-    private unowned var rideEventDelegate: RideEventDelegate
+    private unowned var delegate: BeaconDelegate
 
-    init(major: Int, minor: Int, rssi: Int, red: RideEventDelegate) {
+    init(major: Int, minor: Int, rssi: Int, delegate: BeaconDelegate) {
         Major = major
         Minor = minor
         RSSI = Int.min
-        rideEventDelegate = red
+        self.delegate = delegate
         print ("Created beacon: \(self)")
         update(rssi)
     }
@@ -50,20 +57,18 @@ class Beacon : CustomStringConvertible {
         // determine proximity to beacon for starting and ending rides
         
         if (ride == nil) {
-            if (RSSI > -55) {
-                self.ride = Ride(b: self, red: rideEventDelegate)
-                self.ride!.startRide()
+            if (RSSI > enterTriggerValue) {
+                delegate.beaconEnteredRange(self)
             }
         } else {
-            if (RSSI < -90) {
-                self.ride!.endRide()
-                self.ride = nil
+            if (RSSI < exitTriggerValue) {
+                delegate.beaconExitedRange(self)
             }
         }
     }
     
     deinit {
-        print ("Destroying beacon: \(self)")
+        delegate.beaconExitedRange(self)
     }
     
     // function to do something to beacons in our dictionary once we don't detect them in our range anymore
@@ -81,4 +86,11 @@ class Beacon : CustomStringConvertible {
             return false
         }
     }
+}
+
+extension Beacon: Equatable{}
+
+
+func ==(lhs: Beacon, rhs: Beacon) -> Bool {
+    return lhs.Major == rhs.Major && lhs.Minor == rhs.Minor
 }

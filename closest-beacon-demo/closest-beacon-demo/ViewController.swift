@@ -10,7 +10,7 @@ import UIKit
 import CoreLocation
 import MapKit
 
-class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDelegate {
+class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDelegate, BeaconDelegate {
     @IBOutlet weak var mapView: MKMapView!
     
     // labels for data on the map
@@ -29,6 +29,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
     var beaconDict = [Int: Beacon]()
     var timer = NSTimer()
     var counter = 0
+    var ride: Ride?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,7 +44,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
         
         // sets timer for when a ride starts
         timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "timerAction", userInfo: nil, repeats: true)
-
     }
     
     func startMonitoringRegion() {
@@ -55,21 +55,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
         locationManager.stopMonitoringForRegion(beaconRegion)
         locationManager.stopRangingBeaconsInRegion(beaconRegion)
     }
-    
-    // checks whether a beacon has a ride in progress
-    func checkForRide(dict: [Int: Beacon]) -> Beacon? {
-        for beacon in dict {
-            if beacon.1.ride != nil {
-                return beacon.1
-            }
-        }
-        return nil
-    }
 
     // timer helper function
     func timerAction() {
-        if let rideBeacon = checkForRide(beaconDict) {
-            let startTime = rideBeacon.ride!.startTime
+        if let r = ride {
+            let startTime = r.startTime
             let rideTime = -1 * startTime.timeIntervalSinceNow
             timeLabel.text = NSDateComponentsFormatter().stringFromTimeInterval(rideTime)
         }
@@ -99,7 +89,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
             if let beacon = beaconInDict(beaconDict, major: x.major.integerValue, minor: x.minor.integerValue) {
                 beacon.update(x.rssi)
             } else {
-                let beacon = Beacon(major: x.major.integerValue, minor: x.minor.integerValue, rssi: x.rssi, red: self)
+                let beacon = Beacon(major: x.major.integerValue, minor: x.minor.integerValue, rssi: x.rssi, delegate: self)
                 beaconDict[beacon.key()] = beacon
                 NSLog("Beacon {\(beacon.Major), \(beacon.Minor)} added to beaconDict")
                 NSLog("beaconDict contains " + String(beaconDict.count) + " beacons")
@@ -122,6 +112,28 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
             if (!found) {
                 z.1.outOfRange() // method that takes actions just before beacon is removed
                 beaconDict[z.0] = nil // remove beacon from dictionary
+            }
+        }
+    }
+    
+    // if a current ride exists from the current beacon, break. Otherwise, end ride with current beacon and create new ride with new beacon
+    func beaconEnteredRange(beacon: Beacon) {
+        if let r = ride {
+            if r.beacon == beacon { return }
+            else {
+                r.endRide()
+            }
+        }
+        self.ride = Ride(beacon: beacon, red: self)
+        self.ride!.startRide()
+    }
+    
+    // end ride if a beacon exits our defined range
+    func beaconExitedRange(beacon: Beacon) {
+        if let r = ride {
+            if r.beacon == beacon {
+                self.ride!.endRide()
+                self.ride = nil
             }
         }
     }

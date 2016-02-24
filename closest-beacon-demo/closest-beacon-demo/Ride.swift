@@ -21,17 +21,15 @@ class Ride: NSObject, CLLocationManagerDelegate {
     let locationManager = CLLocationManager()
     var ridePoints: [RidePoint] = []
     let startTime = NSDate()
-    private unowned var beacon: Beacon
+    var beacon: Beacon
     private unowned var rideEventDelegate: RideEventDelegate
     
-    init(b: Beacon, red: RideEventDelegate) {
-        beacon = b
+    init(beacon: Beacon, red: RideEventDelegate) {
+        self.beacon = beacon
         rideEventDelegate = red
-        print ("Ride constructed for Beacon {\(beacon.Major), \(beacon.Minor)}")
     }
     
     deinit {
-        print ("Ride deconstructed for Beacon {\(beacon.Major), \(beacon.Minor)}")
     }
     
     func startRide() {
@@ -43,16 +41,18 @@ class Ride: NSObject, CLLocationManagerDelegate {
         notification.alertBody = "Ride Started!"
         notification.soundName = "Default"
         UIApplication.sharedApplication().presentLocalNotificationNow(notification)
+        NSLog("Ride Started!")
     }
     
     func endRide() {
         // stop updating location with high frequency 
         let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        delegate.updateLocationForRanging(self)
+        delegate.updateLocationForRanging()
         let notification = UILocalNotification()
         notification.alertBody = "Ride Ended. NOOOOOOO :( :( :("
         notification.soundName = "Default"
         UIApplication.sharedApplication().presentLocalNotificationNow(notification)
+        NSLog("Ride Ended")
     }
     
     // returns an array of CLLocationCoordinates for the ride that MKPolyline reads

@@ -15,7 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     let locationManager = CLLocationManager()
-    // create unowned variable for ride
     private weak var ride: Ride?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
@@ -23,7 +22,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         locationManager.delegate = self
         let notificationSettings = UIUserNotificationSettings(forTypes: [.Sound, .Alert, .Badge], categories: nil)
         UIApplication.sharedApplication().registerUserNotificationSettings(notificationSettings)
-        
         return true
     }
 
@@ -35,6 +33,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        NSLog("app entered background")
+        self.updateLocationForRanging()
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
@@ -43,6 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        NSLog("app did become active")
     }
 
     func applicationWillTerminate(application: UIApplication) {
@@ -92,19 +93,25 @@ extension AppDelegate: CLLocationManagerDelegate {
     func updateLocationForRide(ride: Ride) {
         startUpdatingLocation(self, accuracy: kCLLocationAccuracyBestForNavigation)
         self.ride = ride
+        NSLog("app ranging for a ride")
     }
     
     // call this function when a ride ends but we want to keep ranging. Weakest location accuracy to conserve battery while ranging
-    func updateLocationForRanging(ride: Ride) {
+    func updateLocationForRanging() {
+        if let _ = ride {
+            self.ride = nil
+        }
         startUpdatingLocation(self, accuracy: kCLLocationAccuracyThreeKilometers)
-        self.ride = nil
+        NSLog("app ranging for background mode")
     }
     
-    //  check to see if ride variable exists, if it does pass array informatino abck to ride
+    //  check to see if ride variable exists, if it does pass array information abck to ride
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let r = ride {
             r.getLocationInfo(locations)
+            print ("updating location for a ride")
         }
+        // add additional section for ranging info here
     }
 }
 
