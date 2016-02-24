@@ -22,6 +22,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         locationManager.delegate = self
         let notificationSettings = UIUserNotificationSettings(forTypes: [.Sound, .Alert, .Badge], categories: nil)
         UIApplication.sharedApplication().registerUserNotificationSettings(notificationSettings)
+        if self.ride == nil {
+            self.updateLocationForRanging()
+        }
         return true
     }
 
@@ -34,7 +37,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
         NSLog("app entered background")
-        self.updateLocationForRanging()
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
@@ -109,9 +111,11 @@ extension AppDelegate: CLLocationManagerDelegate {
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let r = ride {
             r.getLocationInfo(locations)
-            print ("updating location for a ride")
+            NSLog("updating location for a ride")
         }
-        // add additional section for ranging info here
+        else {
+            NSLog("updating ranging locations")
+        }
     }
 }
 
