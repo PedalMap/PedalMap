@@ -27,8 +27,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
     let beaconRegion = CLBeaconRegion(proximityUUID:
         NSUUID(UUIDString: "11231989-1989-1989-1989-112319891989")!, identifier: "Bicycle")
     var beaconDict = [Int: Beacon]()
-    var timer = NSTimer()
-    var counter = 0
+    var rideTimer = NSTimer()
+    var checkTimer = NSTimer()
     var ride: Ride?
     
     override func viewDidLoad() {
@@ -43,7 +43,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
         startMonitoringRegion()
         
         // sets timer for when a ride starts
-        timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "timerAction", userInfo: nil, repeats: true)
+        rideTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "rideTimerAction", userInfo: nil, repeats: true)
     }
     
     func startMonitoringRegion() {
@@ -54,15 +54,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
     func stopMonitoringRegion() {
         locationManager.stopMonitoringForRegion(beaconRegion)
         locationManager.stopRangingBeaconsInRegion(beaconRegion)
-    }
-
-    // timer helper function
-    func timerAction() {
-        if let r = ride {
-            let startTime = r.startTime
-            let rideTime = -1 * startTime.timeIntervalSinceNow
-            timeLabel.text = NSDateComponentsFormatter().stringFromTimeInterval(rideTime)
-        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -121,20 +112,64 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
         if let r = ride {
             if r.beacon == beacon { return }
             else {
-                r.endRide()
+                self.ride = nil
+                NSLog("ended an existing beacon ride")
             }
         }
-        self.ride = Ride(beacon: beacon, red: self)
-        self.ride!.startRide()
+        startRide(beacon)
+        self.ride!.startRangingForRide()
     }
     
     // end ride if a beacon exits our defined range
     func beaconExitedRange(beacon: Beacon) {
         if let r = ride {
             if r.beacon == beacon {
-                self.ride!.endRide()
-                self.ride = nil
+                endRide()
             }
+        }
+    }
+    
+    // initializes a ride object from the beacon passed through the "beaconEnteredRange" function
+    func startRide(beacon: Beacon) {
+        self.ride = Ride(beacon: beacon, red: self)
+        
+        // sets timer to check whether ride should be ended or not (set to 60 seconds repeating for testing)
+        checkTimer = NSTimer.scheduledTimerWithTimeInterval(60, target: self, selector: "checkRideActivity", userInfo: nil, repeats: true)
+    }
+    
+    //
+    func endRide() {
+        self.ride = nil
+    }
+    
+    // ride timer helper function
+    func rideTimerAction() {
+        if let r = ride {
+            let startTime = r.startTime
+            let rideTime = -1 * startTime.timeIntervalSinceNow
+            timeLabel.text = NSDateComponentsFormatter().stringFromTimeInterval(rideTime)
+        }
+    }
+    
+    /* End ride if rider is not moving for an extended period of time.
+    1) very few ridepoints exist (ride started by accident when rider isn't moving)
+    2) no new location events have been recorded for extended time (rider stopped riding but still hanging out by bike)
+    TODO:
+    3) no distance has been recorded for extended time (rider is with bike and moving but in very limited places e.g. inside a building */
+    
+    func checkRideActivity() {
+        if let r = ride {
+            if r.countRidePoints() <= 10 {
+                self.endRide()
+                NSLog("Ended ride due to limited ridepoints")
+            }
+            
+            // end ride if the last previous 10 ride points occurred in a timespan greater than 5 minutes from now
+            else if Int(r.ridePoints[r.countRidePoints() - 10].timestamp.timeIntervalSinceNow) > 300 {
+                self.endRide()
+                NSLog("Ended ride due to lack of movement in the last 5 minutes")
+            }
+            // TODO: pass array of last 10 ride points, calculate distance traveled and end ride if it's really small
         }
     }
     
@@ -160,7 +195,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
         distanceLabel.text = String(format: "%.2f", distance / 1609.34)
         horizontalAccuracyLabel.text = String(format: "%.2f", horizontalAccuracy)
         avgSpeedLabel.text = String(format: "%.1f", avgSpeed * 2.236936284) // convert m/s to mph
-        totalAltitudeLabel.text = String(format: "%.0f", totalAltitude)
+        totalAltitudeLabel.text = String(format: "%.0f", totalAltitude * 3.28084) // convert m to ft
         verticalAccuracyLabel.text = String(format: "%.2f", verticalAccuracy)
     }
 }

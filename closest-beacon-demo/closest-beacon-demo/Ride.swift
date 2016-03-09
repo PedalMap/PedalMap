@@ -21,6 +21,7 @@ class Ride: NSObject, CLLocationManagerDelegate {
     let locationManager = CLLocationManager()
     var ridePoints: [RidePoint] = []
     let startTime = NSDate()
+    var timer = NSTimer()
     var beacon: Beacon
     private unowned var rideEventDelegate: RideEventDelegate
     
@@ -30,9 +31,10 @@ class Ride: NSObject, CLLocationManagerDelegate {
     }
     
     deinit {
+        self.stopRangingForRide()
     }
     
-    func startRide() {
+    func startRangingForRide() {
         rideEventDelegate.removePolyline()
         // need to make this update to high accuracy
         let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -43,25 +45,30 @@ class Ride: NSObject, CLLocationManagerDelegate {
         UIApplication.sharedApplication().presentLocalNotificationNow(notification)
         NSLog("Ride Started!")
     }
-    
-    func endRide() {
+
+    func stopRangingForRide() {
         // stop updating location with high frequency 
         let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
         delegate.updateLocationForRanging()
         let notification = UILocalNotification()
-        notification.alertBody = "Ride Ended. NOOOOOOO :( :( :("
+        notification.alertBody = "Ride Ended :("
         notification.soundName = "Default"
         UIApplication.sharedApplication().presentLocalNotificationNow(notification)
         NSLog("Ride Ended")
     }
     
     // returns an array of CLLocationCoordinates for the ride that MKPolyline reads
-    func getCoordinates(points: [RidePoint]) -> [CLLocationCoordinate2D] {
+    func getCoordinates() -> [CLLocationCoordinate2D] {
         var rideCoordinates: [CLLocationCoordinate2D] = []
-        for x in points {
+        for x in ridePoints {
             rideCoordinates.append(x.coordinate)
         }
         return rideCoordinates
+    }
+    
+    func countRidePoints() -> Int {
+        let numRidePoints = ridePoints.count
+        return numRidePoints
     }
     
     func distanceTraveled(points: [RidePoint]) -> CLLocationDistance {
@@ -83,12 +90,12 @@ class Ride: NSObject, CLLocationManagerDelegate {
     }
     
     // returns average ride speed, which is sum of total ride speed points divided by total number ride points
-    func avgSpeed(points: [RidePoint]) -> CLLocationSpeed {
+    func avgSpeed() -> CLLocationSpeed {
         var rideSpeeds: [CLLocationSpeed] = []
         var avgSpeed: CLLocationSpeed
         
         // create an array of the ride's CLLocationSpeed points
-        for x in points {
+        for x in ridePoints {
             rideSpeeds.append(x.speed)
         }
         
@@ -101,12 +108,12 @@ class Ride: NSObject, CLLocationManagerDelegate {
         return avgSpeed
     }
     
-    func totalAltitude(points: [RidePoint]) -> CLLocationDistance {
+    func totalAltitude() -> CLLocationDistance {
         var altitudes: [CLLocationDistance] = []
         var totalAltitude: CLLocationDistance = 0.0
 
         // create an array of the ride's altitude points
-        for x in points {
+        for x in ridePoints {
             altitudes.append(x.altitude)
         }
         
@@ -122,8 +129,8 @@ class Ride: NSObject, CLLocationManagerDelegate {
     }
     
     func rideEvent() {
-        let ridePointsCount = ridePoints.count
-        var coords = getCoordinates(ridePoints)
+        let ridePointsCount = countRidePoints()
+        var coords = getCoordinates()
         let myPolyline = MKPolyline(coordinates: &coords, count: ridePointsCount)
         rideEventDelegate.updatedPolyLine(myPolyline)
     }
@@ -146,7 +153,7 @@ class Ride: NSObject, CLLocationManagerDelegate {
         // add new point to ridePoint array if horizontal accuracy < 65 meters and speed is non-negative number
         if horizontalAccuracy < 65 && speed >= 0 {
             self.ridePoints.append(RidePoint(l: latestLocation, c: latestCoordinate, a: altitude, h: horizontalAccuracy, v: verticalAccuracy, t: timestamp, s: speed, d: direction))
-            rideEventDelegate.updatedRideStats(speed, direction: direction, distance: distanceTraveled(ridePoints), horizontalAccuracy: horizontalAccuracy, avgSpeed: avgSpeed(ridePoints), totalAltitude: totalAltitude(ridePoints), verticalAccuracy: verticalAccuracy)
+            rideEventDelegate.updatedRideStats(speed, direction: direction, distance: distanceTraveled(ridePoints), horizontalAccuracy: horizontalAccuracy, avgSpeed: avgSpeed(), totalAltitude: totalAltitude(), verticalAccuracy: verticalAccuracy)
             rideEvent()
         }
     }
