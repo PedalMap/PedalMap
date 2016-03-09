@@ -23,7 +23,7 @@
                                     <outlet property="delegate" destination="vXZ-lx-hvc" id="UcT-VY-gxa"/>
                                 </connections>
                             </mapView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" text="Total Altitude (m)" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="JgF-VZ-GIU">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" text="Total Altitude (ft)" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="JgF-VZ-GIU">
                                 <rect key="frame" x="3" y="459" width="240" height="33"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -59,7 +59,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" text="Distance (Miles)" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="O5L-KJ-072">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" text="Distance (miles)" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="O5L-KJ-072">
                                 <rect key="frame" x="3" y="355" width="240" height="33"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>

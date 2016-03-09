@@ -192,7 +192,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, RideEventDele
     func updatedRideStats(speed: CLLocationSpeed, direction: CLLocationDirection, distance: CLLocationDistance, horizontalAccuracy: CLLocationAccuracy, avgSpeed: CLLocationSpeed, totalAltitude: CLLocationDistance, verticalAccuracy: CLLocationAccuracy) {
         speedLabel.text = String(format: "%.1f", speed * 2.236936284) // convert m/s to mph
         directionLabel.text = String(format: "%.4f", direction)
-        distanceLabel.text = String(format: "%.2f", distance / 1609.34)
+        distanceLabel.text = String(format: "%.2f", distance / 1609.34) // convert meters to miles
         horizontalAccuracyLabel.text = String(format: "%.2f", horizontalAccuracy)
         avgSpeedLabel.text = String(format: "%.1f", avgSpeed * 2.236936284) // convert m/s to mph
         totalAltitudeLabel.text = String(format: "%.0f", totalAltitude * 3.28084) // convert m to ft
